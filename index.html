@@ -7,392 +7,265 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #667eea, #764ba2); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .container { background: white; border-radius: 20px; padding: 30px; width: 500px; max-width: 100%; box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
-        h2 { text-align: center; color: #1e293b; margin-bottom: 20px; }
-        .role-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-        .role-btn { padding: 15px; border: 2px solid #e2e8f0; border-radius: 10px; text-align: center; cursor: pointer; font-weight: 600; }
-        .role-btn.active { border-color: #6366f1; background: #e0e7ff; }
-        input, select { width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; margin: 10px 0; font-size: 16px; }
-        .btn { width: 100%; padding: 14px; border: none; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; margin: 10px 0; }
-        .btn-primary { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
-        .card { background: #f8fafc; padding: 20px; border-radius: 10px; margin: 10px 0; }
-        .option { padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; margin: 5px 0; cursor: pointer; }
-        .option.selected { border-color: #6366f1; background: #6366f1; color: white; }
-        .timer { background: #ef4444; color: white; padding: 8px 16px; border-radius: 20px; font-weight: bold; }
-        .charts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
-        canvas { width: 100% !important; }
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#667eea,#764ba2);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+        .container{background:#fff;border-radius:20px;padding:30px;width:500px;max-width:100%;box-shadow:0 20px 50px rgba(0,0,0,.3)}
+        h2{text-align:center;color:#1e293b;margin-bottom:20px}
+        .role-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+        .role-btn{padding:15px;border:2px solid #e2e8f0;border-radius:10px;text-align:center;cursor:pointer;font-weight:600;background:#fff}
+        .role-btn.active{border-color:#6366f1;background:#e0e7ff}
+        input,select,textarea{width:100%;padding:12px;border:2px solid #e2e8f0;border-radius:10px;margin:10px 0;font-size:16px;font-family:inherit}
+        .btn{width:100%;padding:14px;border:none;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;margin:8px 0}
+        .btn-primary{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff}
+        .btn-danger{background:#ef4444;color:#fff}
+        .card{background:#f8fafc;padding:20px;border-radius:10px;margin:10px 0}
+        .option{padding:12px;border:2px solid #e2e8f0;border-radius:8px;margin:5px 0;cursor:pointer;transition:.3s}
+        .option:hover{border-color:#6366f1;background:#f0f1ff}
+        .option.selected{border-color:#6366f1;background:#6366f1;color:#fff}
+        .timer{background:#ef4444;color:#fff;padding:8px 16px;border-radius:20px;font-weight:700}
+        .stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:15px 0}
+        .stat{background:#f8fafc;padding:15px;border-radius:10px;text-align:center}
+        .stat-val{font-size:28px;font-weight:700;margin:5px 0}
+        canvas{width:100%!important;max-height:250px}
+        table{width:100%;border-collapse:collapse;margin:10px 0}
+        th,td{padding:10px;text-align:left;border-bottom:1px solid #e2e8f0}
+        .badge{display:inline-block;padding:3px 10px;border-radius:15px;font-weight:700;font-size:12px}
+        .badge-1{background:#ffd700;color:#000}
+        .badge-2{background:#c0c0c0;color:#000}
+        .badge-3{background:#cd7f32;color:#fff}
+        .correct{color:#10b981}
+        .wrong{color:#ef4444}
     </style>
 </head>
 <body>
-    <div id="app"></div>
-    <script>
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-        
-        let state = { role: 'admin', user: null, test: null, questions: [], answers: {}, currentQ: 0, timer: null, timeLeft: 0 };
-        
-        // Database
-        const DB = indexedDB.open('CBTDB', 1);
-        DB.onupgradeneeded = e => {
-            const db = e.target.result;
-            if(!db.objectStoreNames.contains('tests')) db.createObjectStore('tests', {keyPath:'id', autoIncrement:true});
-            if(!db.objectStoreNames.contains('results')) db.createObjectStore('results', {keyPath:'id', autoIncrement:true});
-            if(!db.objectStoreNames.contains('students')) db.createObjectStore('students', {keyPath:'rollNo'});
-        };
-        
-        function dbOp(mode, store, cb) {
-            const req = indexedDB.open('CBTDB');
-            req.onsuccess = e => {
-                const db = e.target.result;
-                const tx = db.transaction(store, mode);
-                cb(tx.objectStore(store));
-            };
+<div id="app"></div>
+
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+// State
+let S={role:'admin',user:null,test:null,questions:[],answers:{},curQ:0,timer:null,timeLeft:0,startTime:null};
+
+// Database
+let db;
+const DB_REQ=indexedDB.open('CBT_DB',1);
+DB_REQ.onupgradeneeded=e=>{
+    db=e.target.result;
+    if(!db.objectStoreNames.contains('tests')) db.createObjectStore('tests',{keyPath:'id',autoIncrement:true});
+    if(!db.objectStoreNames.contains('results')) db.createObjectStore('results',{keyPath:'id',autoIncrement:true});
+    if(!db.objectStoreNames.contains('students')) db.createObjectStore('students',{keyPath:'rollNo'});
+};
+DB_REQ.onsuccess=e=>{db=e.target.result;renderLogin()};
+DB_REQ.onerror=()=>alert('Database error! Please allow storage.');
+
+function dbAdd(store,data){return new Promise(r=>{const tx=db.transaction(store,'readwrite');const req=tx.objectStore(store).add(data);req.onsuccess=()=>r(req.result)})}
+function dbAll(store){return new Promise(r=>{const tx=db.transaction(store,'readonly');const req=tx.objectStore(store).getAll();req.onsuccess=()=>r(req.result)})}
+function dbGet(store,id){return new Promise(r=>{const tx=db.transaction(store,'readonly');const req=tx.objectStore(store).get(id);req.onsuccess=()=>r(req.result)})}
+
+// Sample questions
+function sampleQ(){return[{id:1,q:"What is 2+2?",opts:["3","4","5","6"],ans:"4"},{id:2,q:"Capital of India?",opts:["Mumbai","Delhi","Kolkata","Chennai"],ans:"Delhi"},{id:3,q:"Red Planet?",opts:["Venus","Mars","Jupiter","Saturn"],ans:"Mars"},{id:4,q:"Largest Ocean?",opts:["Atlantic","Indian","Arctic","Pacific"],ans:"Pacific"},{id:5,q:"H2O is?",opts:["Oxygen","Water","Salt","Sugar"],ans:"Water"}]}
+
+// Render
+function R(html){document.getElementById('app').innerHTML=html}
+
+// Login Screen
+async function renderLogin(){
+    const tests=await dbAll('tests');
+    if(tests.length===0){await dbAdd('tests',{name:'Sample Test',subject:'GK',duration:10,questions:sampleQ(),total:5,createdAt:new Date().toISOString()})}
+    const freshTests=await dbAll('tests');
+    R(`
+        <div class="container">
+            <h2>📚 CBT Test Platform</h2>
+            <div class="role-btns">
+                <div class="role-btn ${S.role=='admin'?'active':''}" onclick="S.role='admin';renderLogin()">👨‍🏫 Admin</div>
+                <div class="role-btn ${S.role=='student'?'active':''}" onclick="S.role='student';renderLogin()">👨‍🎓 Student</div>
+            </div>
+            ${S.role=='admin'?`
+                <input id="aid" placeholder="Admin ID" value="admin123">
+                <input id="apass" type="password" placeholder="Password" value="admin123">
+                <button class="btn btn-primary" onclick="adminLogin()">🔑 Login as Admin</button>
+            `:`
+                <input id="sname" placeholder="Your Full Name">
+                <input id="sroll" placeholder="Roll Number">
+                <select id="stest">${freshTests.map(t=>`<option value="${t.id}">${t.name} - ${t.subject} (${t.duration}min)</option>`).join('')}</select>
+                <button class="btn btn-primary" onclick="studentStart()">▶️ Start Test</button>
+            `}
+            <p style="text-align:center;margin-top:10px;color:#94a3b8;font-size:12px">Admin: admin123 / admin123</p>
+        </div>
+    `);
+}
+
+// Admin Login
+function adminLogin(){
+    const id=document.getElementById('aid').value,pass=document.getElementById('apass').value;
+    if(id=='admin123'&&pass=='admin123'){S.user={role:'admin'};renderAdmin()}else alert('Wrong! Use admin123/admin123');
+}
+
+// Admin Panel
+function renderAdmin(){
+    R(`
+        <div class="container" style="width:700px">
+            <h2>📊 Admin Dashboard</h2>
+            <button class="btn btn-primary" onclick="showUploadTest()">📤 Upload New Test</button>
+            <button class="btn btn-primary" onclick="showAllResults()">📈 View All Results</button>
+            <button class="btn btn-primary" onclick="showRankings()">🏆 Student Rankings</button>
+            <button class="btn" onclick="S.user=null;S.role='admin';renderLogin()">🚪 Logout</button>
+            <div id="adminArea" style="margin-top:15px"></div>
+        </div>
+    `);
+}
+
+function showUploadTest(){
+    document.getElementById('adminArea').innerHTML=`
+        <div class="card"><h3>📤 Upload Test</h3>
+            <input id="tname" placeholder="Test Name (e.g. Math Mid-Term)">
+            <input id="tsub" placeholder="Subject (e.g. Mathematics)">
+            <input id="tdur" type="number" placeholder="Duration (minutes)" value="30">
+            <label style="display:block;margin-top:10px">Upload Question PDF:</label>
+            <input id="tpdf" type="file" accept=".pdf">
+            <label style="display:block;margin-top:10px">Answer Key (format: 1:A, 2:B, 3:C)</label>
+            <textarea id="tkey" rows="3" placeholder="1:A, 2:B, 3:C"></textarea>
+            <button class="btn btn-primary" onclick="processUpload()">🔄 Process & Upload</button>
+            <div id="upStatus" style="margin-top:10px"></div>
+        </div>
+    `;
+}
+
+async function processUpload(){
+    const name=document.getElementById('tname').value,sub=document.getElementById('tsub').value;
+    const dur=parseInt(document.getElementById('tdur').value),file=document.getElementById('tpdf').files[0];
+    const keyTxt=document.getElementById('tkey').value,st=document.getElementById('upStatus');
+    if(!name||!file){st.innerHTML='❌ Fill all fields & select PDF';return}
+    st.innerHTML='⏳ Processing PDF...';
+    try{
+        const buf=await file.arrayBuffer(),pdf=await pdfjsLib.getDocument({data:buf}).promise;
+        let text='';
+        for(let i=1;i<=pdf.numPages;i++){const p=await pdf.getPage(i);const c=await p.getTextContent();text+=c.items.map(it=>it.str).join(' ')+'\n'}
+        const lines=text.split('\n').filter(l=>l.trim());
+        let qs=[],cur=null;
+        for(let l of lines){l=l.trim();
+            if(/^\d+[.)]\s/.test(l)){if(cur&&cur.opts.length>=2)qs.push(cur);cur={id:qs.length+1,q:l.replace(/^\d+[.)]\s*/,''),opts:[],ans:null}}
+            else if(/^[A-D][.)]\s/.test(l)&&cur)cur.opts.push(l.replace(/^[A-D][.)]\s*/,''));
         }
-        
-        function dbAdd(store, data) {
-            return new Promise(resolve => {
-                dbOp('readwrite', store, s => {
-                    const req = s.add(data);
-                    req.onsuccess = () => resolve(req.result);
-                });
-            });
-        }
-        
-        function dbAll(store) {
-            return new Promise(resolve => {
-                dbOp('readonly', store, s => {
-                    const req = s.getAll();
-                    req.onsuccess = () => resolve(req.result);
-                });
-            });
-        }
-        
-        // Sample Questions
-        function getSampleQuestions() {
-            return [
-                {id:1, q:"What is 2+2?", opts:["3","4","5","6"], ans:"4"},
-                {id:2, q:"Capital of India?", opts:["Mumbai","Delhi","Kolkata","Chennai"], ans:"Delhi"},
-                {id:3, q:"Red Planet?", opts:["Venus","Mars","Jupiter","Saturn"], ans:"Mars"},
-                {id:4, q:"Largest Ocean?", opts:["Atlantic","Indian","Arctic","Pacific"], ans:"Pacific"},
-                {id:5, q:"H2O is?", opts:["Oxygen","Water","Salt","Sugar"], ans:"Water"}
-            ];
-        }
-        
-        // Render Functions
-        function render(html) { document.getElementById('app').innerHTML = html; }
-        
-        function loginScreen() {
-            render(`
-                <div class="container">
-                    <h2>📚 CBT Platform</h2>
-                    <div class="role-btns">
-                        <div class="role-btn ${state.role==='admin'?'active':''}" onclick="state.role='admin';loginScreen()">👨‍🏫 Admin</div>
-                        <div class="role-btn ${state.role==='student'?'active':''}" onclick="state.role='student';loadTests();loginScreen()">👨‍🎓 Student</div>
-                    </div>
-                    ${state.role==='admin' ? `
-                        <input type="text" id="aid" placeholder="Admin ID" value="admin123">
-                        <input type="password" id="apass" placeholder="Password" value="admin123">
-                        <button class="btn btn-primary" onclick="adminLogin()">Login as Admin</button>
-                    ` : `
-                        <input type="text" id="sname" placeholder="Your Name">
-                        <input type="text" id="sroll" placeholder="Roll Number">
-                        <select id="stest"><option>Loading tests...</option></select>
-                        <button class="btn btn-primary" onclick="studentLogin()">Start Test</button>
-                    `}
+        if(cur&&cur.opts.length>=2)qs.push(cur);
+        if(keyTxt){const pairs=keyTxt.split(/[,;\n]+/);pairs.forEach(p=>{const m=p.trim().match(/(\d+)\s*[:=]\s*([A-D])/i);if(m&&qs[parseInt(m[1])-1]){const idx=m[2].toUpperCase().charCodeAt(0)-65;qs[parseInt(m[1])-1].ans=qs[parseInt(m[1])-1].opts[idx]}})}
+        if(qs.length===0)qs=sampleQ();
+        await dbAdd('tests',{name,subject:sub,duration:dur,questions:qs,total:qs.length,createdAt:new Date().toISOString()});
+        st.innerHTML=`✅ Success! ${qs.length} questions uploaded.`;
+        document.getElementById('tname').value='';document.getElementById('tsub').value='';document.getElementById('tkey').value='';document.getElementById('tpdf').value='';
+    }catch(e){st.innerHTML='❌ Error: '+e.message}
+}
+
+async function showAllResults(){
+    const results=await dbAll('results');
+    document.getElementById('adminArea').innerHTML=results.length===0?'<p>No results yet.</p>':`
+        <div class="card"><h3>📈 All Results (${results.length})</h3>
+            <table><thead><tr><th>Student</th><th>Roll</th><th>Test</th><th>Score</th><th>Time</th><th>Date</th></tr></thead><tbody>
+                ${results.map(r=>`<tr><td>${r.sname}</td><td>${r.sroll}</td><td>${r.tname}</td><td><b>${r.pct}%</b></td><td>${Math.floor(r.time/60)}m ${r.time%60}s</td><td>${new Date(r.date).toLocaleDateString()}</td></tr>`).join('')}
+            </tbody></table></div>`;
+}
+
+async function showRankings(){
+    const tests=await dbAll('tests'),results=await dbAll('results');
+    let html='';
+    for(let t of tests){const tr=results.filter(r=>r.testId===t.id).sort((a,b)=>b.pct-a.pct);
+        html+=`<div class="card"><h4>🏆 ${t.name} (${t.subject})</h4><table><thead><tr><th>Rank</th><th>Student</th><th>Score</th><th>Time</th></tr></thead><tbody>`;
+        tr.slice(0,10).forEach((r,i)=>{html+=`<tr><td><span class="badge ${i<3?'badge-'+(i+1):''}">#${i+1}</span></td><td>${r.sname} (${r.sroll})</td><td><b>${r.pct}%</b></td><td>${Math.floor(r.time/60)}m ${r.time%60}s</td></tr>`});
+        html+='</tbody></table></div>'}
+    document.getElementById('adminArea').innerHTML=html||'<p>No data</p>';
+}
+
+// Student Test
+async function studentStart(){
+    const name=document.getElementById('sname').value,roll=document.getElementById('sroll').value,testId=parseInt(document.getElementById('stest').value);
+    if(!name||!roll)return alert('Fill all fields');
+    await dbAdd('students',{rollNo:roll,name:name,lastActive:new Date().toISOString()});
+    S.test=await dbGet('tests',testId);S.user={role:'student',name,rollNo:roll};S.questions=S.test.questions;S.answers={};S.curQ=0;S.timeLeft=S.test.duration*60;S.startTime=Date.now();
+    renderTest();
+}
+
+function renderTest(){
+    R(`
+        <div style="width:100vw;height:100vh;background:#fff;display:flex;flex-direction:column">
+            <div style="background:#1e293b;color:#fff;padding:12px 25px;display:flex;justify-content:space-between;align-items:center">
+                <div><b>${S.test.name}</b><br><small>${S.user.name} | ${S.user.rollNo}</small></div>
+                <div class="timer" id="timerDisp">${fmtTime(S.timeLeft)}</div>
+                <button class="btn btn-danger" style="width:auto;padding:10px 20px" onclick="submitTest()">📝 Submit</button>
+            </div>
+            <div style="display:flex;flex:1;overflow:hidden">
+                <div style="flex:1;padding:25px;overflow-y:auto" id="qArea"></div>
+                <div style="width:260px;background:#f8fafc;padding:15px;border-left:1px solid #e2e8f0;overflow-y:auto">
+                    <h4>Question Palette</h4>
+                    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin:10px 0" id="qGrid"></div>
+                    <div style="font-size:11px;margin-top:10px">🟦 Answered | 🟪 Current | ⬜ Not Visited</div>
                 </div>
-            `);
-        }
-        
-        async function loadTests() {
-            const tests = await dbAll('tests');
-            if(tests.length===0) {
-                await dbAdd('tests', {name:'Sample Test', subject:'GK', duration:10, questions:getSampleQuestions()});
-                return loadTests();
-            }
-            const sel = document.getElementById('stest');
-            if(sel) sel.innerHTML = tests.map(t => `<option value="${t.id}">${t.name} (${t.duration}min)</option>`).join('');
-        }
-        
-        function adminLogin() {
-            const id = document.getElementById('aid').value;
-            const pass = document.getElementById('apass').value;
-            if(id==='admin123' && pass==='admin123') { state.user={role:'admin'}; adminPanel(); }
-            else alert('Wrong credentials! Use admin123/admin123');
-        }
-        
-        async function studentLogin() {
-            const name = document.getElementById('sname').value;
-            const roll = document.getElementById('sroll').value;
-            const testId = parseInt(document.getElementById('stest').value);
-            if(!name||!roll) return alert('Fill all fields');
-            await dbAdd('students', {rollNo:roll, name:name});
-            const tests = await dbAll('tests');
-            state.test = tests.find(t=>t.id===testId);
-            state.user = {role:'student', name, rollNo:roll};
-            startTest();
-        }
-        
-        // Admin Panel
-        function adminPanel() {
-            render(`
-                <div class="container" style="width:700px;">
-                    <h2>📊 Admin Panel</h2>
-                    <button class="btn btn-primary" onclick="showUpload()">📤 Upload Test</button>
-                    <button class="btn btn-primary" onclick="showResults()">📈 View Results</button>
-                    <button class="btn btn-primary" onclick="showRankings()">🏆 Rankings</button>
-                    <button class="btn" onclick="state.user=null;state.role='admin';loginScreen()">🚪 Logout</button>
-                    <div id="adminContent"></div>
-                </div>
-            `);
-        }
-        
-        function showUpload() {
-            document.getElementById('adminContent').innerHTML = `
-                <div class="card">
-                    <h3>Upload New Test</h3>
-                    <input type="text" id="tname" placeholder="Test Name">
-                    <input type="text" id="tsubject" placeholder="Subject">
-                    <input type="number" id="tduration" placeholder="Duration (minutes)" value="10">
-                    <input type="file" id="tpdf" accept=".pdf">
-                    <textarea id="takey" placeholder="Answer Key: 1:A,2:B,3:C" rows="3"></textarea>
-                    <button class="btn btn-primary" onclick="uploadTest()">Upload Test</button>
-                    <div id="upStatus"></div>
-                </div>
-            `;
-        }
-        
-        async function uploadTest() {
-            const name = document.getElementById('tname').value;
-            const subject = document.getElementById('tsubject').value;
-            const duration = parseInt(document.getElementById('tduration').value);
-            const file = document.getElementById('tpdf').files[0];
-            const keyText = document.getElementById('takey').value;
-            
-            if(!name||!file) return alert('Fill all fields and select PDF');
-            document.getElementById('upStatus').innerHTML = 'Processing...';
-            
-            try {
-                const arr = await file.arrayBuffer();
-                const pdf = await pdfjsLib.getDocument({data:arr}).promise;
-                let text = '';
-                for(let i=1;i<=pdf.numPages;i++) {
-                    const page = await pdf.getPage(i);
-                    const content = await page.getTextContent();
-                    text += content.items.map(it=>it.str).join(' ')+'\n';
-                }
-                
-                const lines = text.split('\n').filter(l=>l.trim());
-                let questions = [], cur = null;
-                
-                for(let line of lines) {
-                    line = line.trim();
-                    if(/^\d+[.)]\s/.test(line)) {
-                        if(cur&&cur.opts.length>=2) questions.push(cur);
-                        cur = {id:questions.length+1, q:line.replace(/^\d+[.)]\s*/, ''), opts:[], ans:null};
-                    } else if(/^[A-D][.)]\s/.test(line) && cur) {
-                        cur.opts.push(line.replace(/^[A-D][.)]\s*/, ''));
-                    }
-                }
-                if(cur&&cur.opts.length>=2) questions.push(cur);
-                
-                if(keyText) {
-                    const pairs = keyText.split(/[,;\n]+/);
-                    pairs.forEach(p => {
-                        const m = p.trim().match(/(\d+)\s*[:=]\s*([A-D])/i);
-                        if(m && questions[parseInt(m[1])-1]) {
-                            const idx = m[2].toUpperCase().charCodeAt(0)-65;
-                            questions[parseInt(m[1])-1].ans = questions[parseInt(m[1])-1].opts[idx];
-                        }
-                    });
-                }
-                
-                if(questions.length===0) questions = getSampleQuestions();
-                
-                await dbAdd('tests', {name, subject, duration, questions, total:questions.length});
-                document.getElementById('upStatus').innerHTML = `✅ Done! ${questions.length} questions.`;
-            } catch(e) {
-                document.getElementById('upStatus').innerHTML = '❌ Error: '+e.message;
-            }
-        }
-        
-        async function showResults() {
-            const results = await dbAll('results');
-            document.getElementById('adminContent').innerHTML = results.length===0 ? 
-                '<p>No results yet</p>' :
-                `<table style="width:100%"><tr><th>Student</th><th>Test</th><th>Score</th><th>Time</th></tr>
-                ${results.map(r=>`<tr><td>${r.sname}</td><td>${r.tname}</td><td>${r.pct}%</td><td>${Math.floor(r.time/60)}m</td></tr>`).join('')}</table>`;
-        }
-        
-        async function showRankings() {
-            const tests = await dbAll('tests');
-            let html = '';
-            for(let test of tests) {
-                const results = (await dbAll('results')).filter(r=>r.testId===test.id).sort((a,b)=>b.pct-a.pct);
-                html += `<h4>${test.name}</h4><table style="width:100%">`;
-                results.slice(0,10).forEach((r,i) => {
-                    html += `<tr><td>#${i+1}</td><td>${r.sname}</td><td>${r.pct}%</td></tr>`;
-                });
-                html += '</table><br>';
-            }
-            document.getElementById('adminContent').innerHTML = html || '<p>No data</p>';
-        }
-        
-        // Test Interface
-        function startTest() {
-            state.questions = state.test.questions;
-            state.answers = {};
-            state.currentQ = 0;
-            state.timeLeft = state.test.duration * 60;
-            
-            render(`
-                <div style="width:100%;height:100vh;background:white;">
-                    <div style="background:#1e293b;color:white;padding:15px 30px;display:flex;justify-content:space-between;">
-                        <span>${state.test.name} | ${state.user.name}</span>
-                        <span class="timer" id="timerDisplay">${fmtTime(state.timeLeft)}</span>
-                        <button onclick="submitTest()" style="background:#ef4444;color:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;">Submit</button>
-                    </div>
-                    <div style="display:flex;height:calc(100vh-70px);">
-                        <div style="flex:1;padding:30px;overflow-y:auto;" id="qArea"></div>
-                        <div style="width:250px;background:#f8fafc;padding:20px;border-left:1px solid #e2e8f0;">
-                            <h4>Questions</h4>
-                            <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin:10px 0;" id="qGrid"></div>
-                        </div>
-                    </div>
-                </div>
-            `);
-            
-            showQuestion();
-            state.timer = setInterval(() => {
-                state.timeLeft--;
-                const el = document.getElementById('timerDisplay');
-                if(el) el.textContent = fmtTime(state.timeLeft);
-                if(state.timeLeft<=0) { clearInterval(state.timer); submitTest(); }
-            }, 1000);
-        }
-        
-        function fmtTime(s) {
-            const m = Math.floor(s/60), sec = s%60;
-            return `${m.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
-        }
-        
-        function showQuestion() {
-            const q = state.questions[state.currentQ];
-            const area = document.getElementById('qArea');
-            if(!area) return;
-            
-            area.innerHTML = `
-                <h3>Q${state.currentQ+1}: ${q.q}</h3>
-                ${q.opts.map((o,i) => `
-                    <div class="option ${state.answers[state.currentQ]===i?'selected':''}" onclick="selectAns(${i})">
-                        ${String.fromCharCode(65+i)}) ${o}
-                    </div>
-                `).join('')}
-                <div style="margin-top:20px;display:flex;gap:10px;">
-                    <button class="btn btn-primary" onclick="state.currentQ--;showQuestion()" ${state.currentQ===0?'disabled':''}>◀ Prev</button>
-                    <button class="btn btn-primary" onclick="state.currentQ++;showQuestion()" ${state.currentQ===state.questions.length-1?'disabled':''}>Next ▶</button>
-                </div>
-            `;
-            
-            // Update grid
-            const grid = document.getElementById('qGrid');
-            if(grid) {
-                grid.innerHTML = state.questions.map((_,i) => `
-                    <div onclick="state.currentQ=${i};showQuestion()" 
-                         style="aspect-ratio:1;border:2px solid ${i===state.currentQ?'#6366f1':state.answers[i]!==undefined?'#3b82f6':'#e2e8f0'};border-radius:5px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-weight:bold;background:${i===state.currentQ?'#6366f1':state.answers[i]!==undefined?'#dbeafe':'white'};color:${i===state.currentQ?'white':'black'};">
-                        ${i+1}
-                    </div>
-                `).join('');
-            }
-        }
-        
-        function selectAns(i) {
-            state.answers[state.currentQ] = i;
-            showQuestion();
-        }
-        
-        async function submitTest() {
-            clearInterval(state.timer);
-            if(!confirm('Submit test?')) return;
-            
-            const timeTaken = state.test.duration*60 - state.timeLeft;
-            let correct=0, incorrect=0, unattempted=0;
-            
-            state.questions.forEach((q,i) => {
-                if(state.answers[i]===undefined) unattempted++;
-                else if(q.opts[state.answers[i]]===q.ans) correct++;
-                else incorrect++;
-            });
-            
-            const pct = ((correct/state.questions.length)*100).toFixed(1);
-            
-            await dbAdd('results', {
-                testId: state.test.id,
-                tname: state.test.name,
-                sname: state.user.name,
-                sroll: state.user.rollNo,
-                correct, incorrect, unattempted,
-                pct: parseFloat(pct),
-                time: timeTaken,
-                details: state.questions.map((q,i) => ({
-                    q:q.q,
-                    userAns: state.answers[i]!==undefined?q.opts[state.answers[i]]:'Not Attempted',
-                    correctAns: q.ans,
-                    correct: state.answers[i]!==undefined && q.opts[state.answers[i]]===q.ans
-                })),
-                date: new Date().toISOString()
-            });
-            
-            // Show results
-            const results = (await dbAll('results')).filter(r=>r.testId===state.test.id).sort((a,b)=>b.pct-a.pct);
-            const rank = results.findIndex(r=>r.sroll===state.user.rollNo)+1;
-            
-            render(`
-                <div class="container" style="width:700px;">
-                    <h2>✅ Test Completed!</h2>
-                    <div style="text-align:center;font-size:48px;font-weight:bold;color:#6366f1;">${pct}%</div>
-                    <p>Rank: #${rank} | Time: ${Math.floor(timeTaken/60)}m ${timeTaken%60}s</p>
-                    <div class="stats-grid" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
-                        <div class="card" style="text-align:center;color:#10b981;">✅ Correct<br><b>${correct}</b></div>
-                        <div class="card" style="text-align:center;color:#ef4444;">❌ Incorrect<br><b>${incorrect}</b></div>
-                        <div class="card" style="text-align:center;color:#f59e0b;">⚪ Unattempted<br><b>${unattempted}</b></div>
-                    </div>
-                    <div class="charts">
-                        <canvas id="chart1"></canvas>
-                        <canvas id="chart2"></canvas>
-                    </div>
-                    <h3>🏆 Leaderboard</h3>
-                    <table style="width:100%">
-                        ${results.slice(0,5).map((r,i)=>`
-                            <tr><td>#${i+1}</td><td>${r.sname}</td><td>${r.pct}%</td></tr>
-                        `).join('')}
-                    </table>
-                    <h3>📋 Detailed Answers</h3>
-                    ${state.questions.map((q,i) => `
-                        <div class="card">
-                            <b>Q${i+1}:</b> ${q.q}<br>
-                            Your Answer: <span style="color:${state.answers[i]!==undefined&&q.opts[state.answers[i]]===q.ans?'#10b981':'#ef4444'}">${state.answers[i]!==undefined?q.opts[state.answers[i]]:'Not Attempted'}</span><br>
-                            Correct: <span style="color:#10b981">${q.ans||'N/A'}</span>
-                        </div>
-                    `).join('')}
-                    <button class="btn btn-primary" onclick="state.user=null;state.role='student';loginScreen()">Back to Login</button>
-                </div>
-            `);
-            
-            // Charts
-            new Chart(document.getElementById('chart1'), {
-                type:'doughnut',
-                data:{labels:['Correct','Incorrect','Unattempted'],datasets:[{data:[correct,incorrect,unattempted],backgroundColor:['#10b981','#ef4444','#f59e0b']}]}
-            });
-            new Chart(document.getElementById('chart2'), {
-                type:'bar',
-                data:{labels:['Score'],datasets:[{data:[pct],backgroundColor:'#6366f1'}]},
-                options:{scales:{y:{max:100}}}
-            });
-        }
-        
-        // Start
-        loginScreen();
-    </script>
+            </div>
+        </div>
+    `);
+    showQ();
+    S.timer=setInterval(()=>{S.timeLeft--;const td=document.getElementById('timerDisp');if(td)td.textContent=fmtTime(S.timeLeft);if(S.timeLeft<=0){clearInterval(S.timer);submitTest()}},1000);
+}
+
+function fmtTime(s){const m=Math.floor(s/60),sec=s%60;return `${m.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`}
+
+function showQ(){
+    const q=S.questions[S.curQ],area=document.getElementById('qArea');if(!area)return;
+    area.innerHTML=`
+        <h3 style="margin-bottom:5px">Question ${S.curQ+1} of ${S.questions.length}</h3>
+        <div style="background:#f1f5f9;padding:20px;border-radius:10px;margin-bottom:15px"><p style="font-size:18px">${q.q}</p></div>
+        ${q.opts.map((o,i)=>`<div class="option ${S.answers[S.curQ]===i?'selected':''}" onclick="selectOpt(${i})"><b>${String.fromCharCode(65+i)}.</b> ${o}</div>`).join('')}
+        <div style="display:flex;gap:10px;margin-top:20px">
+            <button class="btn btn-primary" style="width:auto" onclick="S.curQ--;showQ()" ${S.curQ===0?'disabled':''}>◀ Prev</button>
+            <button class="btn btn-primary" style="width:auto" onclick="S.curQ++;showQ()" ${S.curQ===S.questions.length-1?'disabled':''}>Next ▶</button>
+        </div>`;
+    const grid=document.getElementById('qGrid');if(grid)grid.innerHTML=S.questions.map((_,i)=>`<div onclick="S.curQ=${i};showQ()" style="aspect-ratio:1;border:2px solid ${i===S.curQ?'#6366f1':S.answers[i]!==undefined?'#3b82f6':'#e2e8f0'};border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-weight:700;font-size:13px;background:${i===S.curQ?'#6366f1':S.answers[i]!==undefined?'#dbeafe':'#fff'};color:${i===S.curQ?'#fff':'#1e293b'}">${i+1}</div>`).join('');
+}
+
+function selectOpt(i){S.answers[S.curQ]=i;showQ()}
+
+async function submitTest(){
+    clearInterval(S.timer);
+    if(!confirm('Submit test? You cannot change answers after this.')){S.timer=setInterval(()=>{S.timeLeft--;const td=document.getElementById('timerDisp');if(td)td.textContent=fmtTime(S.timeLeft);if(S.timeLeft<=0){clearInterval(S.timer);submitTest()}},1000);return}
+    const timeTaken=Math.floor((Date.now()-S.startTime)/1000);
+    let correct=0,incorrect=0,unattempted=0;
+    S.questions.forEach((q,i)=>{if(S.answers[i]===undefined)unattempted++;else if(q.opts[S.answers[i]]===q.ans)correct++;else incorrect++});
+    const pct=parseFloat(((correct/S.questions.length)*100).toFixed(1));
+    const result={testId:S.test.id,tname:S.test.name,sname:S.user.name,sroll:S.user.rollNo,correct,incorrect,unattempted,pct,time:timeTaken,date:new Date().toISOString(),details:S.questions.map((q,i)=>({q:q.q,userAns:S.answers[i]!==undefined?q.opts[S.answers[i]]:'Not Attempted',correctAns:q.ans,isCorrect:S.answers[i]!==undefined&&q.opts[S.answers[i]]===q.ans}))};
+    await dbAdd('results',result);
+    const allRes=(await dbAll('results')).filter(r=>r.testId===S.test.id).sort((a,b)=>b.pct-a.pct);
+    const rank=allRes.findIndex(r=>r.sroll===S.user.rollNo)+1;
+    showResults(result,rank,allRes);
+}
+
+function showResults(result,rank,allRes){
+    R(`
+        <div class="container" style="width:750px">
+            <h2>✅ Test Completed!</h2>
+            <div style="text-align:center;font-size:56px;font-weight:800;color:#6366f1;margin:15px 0">${result.pct}%</div>
+            <p style="text-align:center">🏅 Your Rank: <b>#${rank}</b> of ${allRes.length} | ⏱️ Time: ${Math.floor(result.time/60)}m ${result.time%60}s</p>
+            <div class="stats">
+                <div class="stat"><div class="stat-val correct">${result.correct}</div>✅ Correct</div>
+                <div class="stat"><div class="stat-val wrong">${result.incorrect}</div>❌ Incorrect</div>
+                <div class="stat"><div class="stat-val" style="color:#f59e0b">${result.unattempted}</div>⚪ Unattempted</div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;margin:15px 0">
+                <div class="card"><h4>Score Distribution</h4><canvas id="chart1"></canvas></div>
+                <div class="card"><h4>Performance</h4><canvas id="chart2"></canvas></div>
+            </div>
+            <div class="card"><h3>🏆 Leaderboard</h3>
+                <table><thead><tr><th>Rank</th><th>Student</th><th>Score</th><th>Time</th></tr></thead><tbody>
+                    ${allRes.slice(0,5).map((r,i)=>`<tr ${r.sroll===result.sroll?'style="background:#e0e7ff"':''}><td><span class="badge ${i<3?'badge-'+(i+1):''}">#${i+1}</span></td><td>${r.sname}</td><td><b>${r.pct}%</b></td><td>${Math.floor(r.time/60)}m ${r.time%60}s</td></tr>`).join('')}
+                </tbody></table>
+            </div>
+            <div class="card"><h3>📋 Detailed Answers</h3>
+                ${result.details.map((d,i)=>`<div style="padding:10px;margin:5px 0;border-left:4px solid ${d.isCorrect?'#10b981':'#ef4444'};background:#f8fafc"><b>Q${i+1}:</b> ${d.q}<br><small>Your Answer: <span class="${d.isCorrect?'correct':'wrong'}">${d.userAns}</span> | Correct: <span class="correct">${d.correctAns||'N/A'}</span></small></div>`).join('')}
+            </div>
+            <button class="btn btn-primary" onclick="S.user=null;S.role='student';renderLogin()">🏠 Back to Login</button>
+        </div>
+    `);
+    new Chart(document.getElementById('chart1'),{type:'doughnut',data:{labels:['Correct','Incorrect','Unattempted'],datasets:[{data:[result.correct,result.incorrect,result.unattempted],backgroundColor:['#10b981','#ef4444','#f59e0b']}]}});
+    new Chart(document.getElementById('chart2'),{type:'bar',data:{labels:['Your Score'],datasets:[{data:[result.pct],backgroundColor:'#6366f1'}]},options:{scales:{y:{max:100}}}});
+}
+</script>
 </body>
 </html>
