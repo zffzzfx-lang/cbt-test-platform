@@ -1,1 +1,1 @@
-# cbt-test-platform
+# cbt-platform
