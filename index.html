@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CBT Test Platform</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        /* SAME CSS AS ABOVE - COPY FROM style.css */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial; background: linear-gradient(135deg, #667eea, #764ba2); min-height: 100vh; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .card { background: white; border-radius: 15px; padding: 30px; margin: 20px 0; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .upload-area { border: 3px dashed #667eea; padding: 40px; text-align: center; cursor: pointer; background: #f8f9ff; }
+        .btn-primary { background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-size: 16px; }
+        .options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .option { padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; cursor: pointer; }
+        .option:hover { border-color: #667eea; background: #f0f1ff; }
+        .option.selected { border-color: #667eea; background: #667eea; color: white; }
+        .question-card { background: #f8f9ff; padding: 20px; border-radius: 10px; margin: 15px 0; }
+        .correct { color: #4caf50; font-weight: bold; }
+        .incorrect { color: #f44336; font-weight: bold; }
+        .charts-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="color:white; text-align:center;">📚 CBT Test Platform</h1>
+        
+        <!-- Upload Section -->
+        <div class="card" id="uploadSection">
+            <h2>Upload Question Paper (PDF)</h2>
+            <div class="upload-area" id="dropZone">
+                <p>📄 Drop PDF here or <input type="file" id="pdfUpload" accept=".pdf"></p>
+            </div>
+            <button class="btn-primary" onclick="loadSampleQuestions()" style="margin-top:10px;">Use Sample Questions</button>
+        </div>
+
+        <!-- Test Section -->
+        <div class="card" id="testSection" style="display:none;">
+            <div id="timer">⏱️ Time: <span id="timeDisplay">00:00</span></div>
+            <div id="questionContainer"></div>
+            <div style="display:flex; justify-content:space-between; margin:20px 0;">
+                <button class="btn-primary" onclick="prevQuestion()">◀ Previous</button>
+                <span id="questionIndicator"></span>
+                <button class="btn-primary" onclick="nextQuestion()">Next ▶</button>
+            </div>
+            <button class="btn-primary" onclick="submitTest()">Submit Test ✅</button>
+        </div>
+
+        <!-- Results Section -->
+        <div class="card" id="resultsSection" style="display:none;">
+            <h2>Results & Analytics</h2>
+            <div id="scoreDisplay"></div>
+            <div class="charts-container">
+                <canvas id="scoreChart"></canvas>
+                <canvas id="performanceChart"></canvas>
+            </div>
+            <div id="detailedAnswers"></div>
+            <button class="btn-primary" onclick="location.reload()">Retake Test 🔄</button>
+            <button class="btn-primary" onclick="exportResults()">Export Results 📊</button>
+        </div>
+    </div>
+
+    <script>
+        // Complete JavaScript
+        let questions = [];
+        let currentIndex = 0;
+        let answers = {};
+        let timerInterval;
+        let startTime;
+
+        // Sample Questions
+        function loadSampleQuestions() {
+            questions = [
+                { id: 1, question: "What is 2+2?", options: ["3", "4", "5", "6"], correct: "4" },
+                { id: 2, question: "Capital of France?", options: ["London", "Berlin", "Paris", "Madrid"], correct: "Paris" },
+                { id: 3, question: "Red Planet?", options: ["Venus", "Mars", "Jupiter", "Saturn"], correct: "Mars" },
+                { id: 4, question: "Largest Ocean?", options: ["Atlantic", "Indian", "Arctic", "Pacific"], correct: "Pacific" }
+            ];
+            startTest();
+        }
+
+        // PDF Upload
+        document.getElementById('pdfUpload').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const arrayBuffer = await file.arrayBuffer();
+                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                let text = '';
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    const page = await pdf.getPage(i);
+                    const content = await page.getTextContent();
+                    text += content.items.map(item => item.str).join(' ') + '\n';
+                }
+                
+                // Simple parsing
+                const lines = text.split('\n');
+                questions = [];
+                let currentQ = null;
+                
+                lines.forEach(line => {
+                    if (/^\d+[.)]/.test(line)) {
+                        if (currentQ) questions.push(currentQ);
+                        currentQ = { id: questions.length+1, question: line, options: [], correct: null };
+                    } else if (/^[A-D][.)]/.test(line) && currentQ) {
+                        currentQ.options.push(line.replace(/^[A-D][.)]\s*/, ''));
+                    }
+                });
+                if (currentQ) questions.push(currentQ);
+                
+                if (questions.length > 0) startTest();
+                else alert('No questions found. Using samples.');
+            }
+        });
+
+        function startTest() {
+            document.getElementById('uploadSection').style.display = 'none';
+            document.getElementById('testSection').style.display = 'block';
+            startTime = Date.now();
+            timerInterval = setInterval(updateTimer, 1000);
+            displayQuestion();
+        }
+
+        function updateTimer() {
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            const mins = Math.floor(elapsed / 60);
+            const secs = elapsed % 60;
+            document.getElementById('timeDisplay').textContent = 
+                `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
+        }
+
+        function displayQuestion() {
+            const q = questions[currentIndex];
+            document.getElementById('questionContainer').innerHTML = `
+                <div class="question-card">
+                    <h3>Question ${currentIndex + 1}/${questions.length}</h3>
+                    <p><strong>${q.question}</strong></p>
+                    <div class="options">
+                        ${q.options.map((opt, i) => `
+                            <div class="option ${answers[q.id] === opt ? 'selected' : ''}" 
+                                 onclick="selectAnswer(${q.id}, '${opt.replace(/'/g, "\\'")}')">
+                                ${String.fromCharCode(65+i)}) ${opt}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            document.getElementById('questionIndicator').textContent = 
+                `Question ${currentIndex+1}/${questions.length}`;
+        }
+
+        function selectAnswer(qid, answer) {
+            answers[qid] = answer;
+            displayQuestion();
+        }
+
+        function nextQuestion() {
+            if (currentIndex < questions.length-1) { currentIndex++; displayQuestion(); }
+        }
+
+        function prevQuestion() {
+            if (currentIndex > 0) { currentIndex--; displayQuestion(); }
+        }
+
+        function submitTest() {
+            clearInterval(timerInterval);
+            const timeTaken = Math.floor((Date.now() - startTime) / 1000);
+            let correct = 0, incorrect = 0, unattempted = 0;
+            const details = [];
+
+            questions.forEach(q => {
+                const userAns = answers[q.id];
+                if (!userAns) {
+                    unattempted++;
+                    details.push({ q: q.question, user: 'Not Attempted', correct: q.correct, isCorrect: false });
+                } else if (userAns === q.correct) {
+                    correct++;
+                    details.push({ q: q.question, user: userAns, correct: q.correct, isCorrect: true });
+                } else {
+                    incorrect++;
+                    details.push({ q: q.question, user: userAns, correct: q.correct, isCorrect: false });
+                }
+            });
+
+            const percentage = ((correct / questions.length) * 100).toFixed(2);
+
+            // Show results
+            document.getElementById('testSection').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'block';
+            
+            document.getElementById('scoreDisplay').innerHTML = `
+                <h3>Score: ${percentage}%</h3>
+                <p>✅ Correct: ${correct} | ❌ Incorrect: ${incorrect} | ⚪ Unattempted: ${unattempted}</p>
+                <p>⏱️ Time: ${Math.floor(timeTaken/60)}m ${timeTaken%60}s</p>
+            `;
+
+            // Charts
+            new Chart(document.getElementById('scoreChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Correct', 'Incorrect', 'Unattempted'],
+                    datasets: [{
+                        data: [correct, incorrect, unattempted],
+                        backgroundColor: ['#4caf50', '#f44336', '#ff9800']
+                    }]
+                }
+            });
+
+            new Chart(document.getElementById('performanceChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Your Score'],
+                    datasets: [{
+                        label: 'Percentage',
+                        data: [percentage],
+                        backgroundColor: '#667eea'
+                    }]
+                },
+                options: {
+                    scales: { y: { beginAtZero: true, max: 100 } }
+                }
+            });
+
+            // Detailed answers
+            document.getElementById('detailedAnswers').innerHTML = details.map((d, i) => `
+                <div class="question-card">
+                    <h4>Q${i+1}: ${d.q}</h4>
+                    <p>Your Answer: <span class="${d.isCorrect ? 'correct' : 'incorrect'}">${d.user}</span></p>
+                    <p>Correct: <span class="correct">${d.correct}</span></p>
+                    ${d.isCorrect ? '✅' : '❌'}
+                </div>
+            `).join('');
+
+            // Save to localStorage
+            const history = JSON.parse(localStorage.getItem('testHistory') || '[]');
+            history.push({ date: new Date().toISOString(), score: percentage, correct, incorrect, unattempted, timeTaken });
+            localStorage.setItem('testHistory', JSON.stringify(history));
+        }
+
+        function exportResults() {
+            const history = localStorage.getItem('testHistory');
+            const blob = new Blob([history], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'test-results.json';
+            a.click();
+        }
+
+        // Initialize PDF.js
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    </script>
+</body>
+</html>
