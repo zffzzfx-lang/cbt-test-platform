@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#0a0e17">
-    <title>ProCBT Platform</title>
+    <title>ProCBT - Scan, Count, Extract</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
-        :root{--bg:#0a0e17;--bg2:#111827;--card:#1a1f2e;--input:#1e2433;--text:#e2e8f0;--text2:#94a3b8;--accent:#6366f1;--green:#10b981;--red:#ef4444;--yellow:#f59e0b;--border:#1e293b;--radius:14px;--r2:10px}
-        *{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;min-height:100dvh;-webkit-font-smoothing:antialiased;overflow-x:hidden;touch-action:manipulation}::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-3px)}40%,80%{transform:translateX(3px)}}.anim-fade{animation:fadeIn 0.3s ease forwards}.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--card);color:var(--text);padding:12px 24px;border-radius:25px;font-size:14px;font-weight:600;z-index:9999;box-shadow:0 8px 30px rgba(0,0,0,0.5);border:1px solid var(--border);opacity:0;pointer-events:none;transition:opacity 0.3s}.toast.show{opacity:1}.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:15px;background:radial-gradient(ellipse at top,#1a1f3e 0%,var(--bg) 70%)}.login-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:30px 25px;width:440px;max-width:100%;box-shadow:0 4px 25px rgba(0,0,0,0.5)}.login-card h1{font-size:26px;text-align:center;margin-bottom:4px;background:linear-gradient(135deg,#818cf8,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}.login-card .sub{text-align:center;color:var(--text2);margin-bottom:20px;font-size:13px}.tabs{display:grid;grid-template-columns:1fr 1fr;gap:5px;background:var(--input);padding:4px;border-radius:12px;margin-bottom:20px}.tab{padding:11px;text-align:center;border-radius:8px;cursor:pointer;font-weight:600;font-size:14px;transition:all 0.25s;color:var(--text2);user-select:none}.tab.active{background:var(--accent);color:#fff;box-shadow:0 4px 15px rgba(99,102,241,0.3)}.fg{margin-bottom:14px}.fg label{display:block;margin-bottom:4px;font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px}.fg input,.fg select,.fg textarea{width:100%;padding:13px 15px;background:var(--input);border:2px solid var(--border);border-radius:var(--r2);color:var(--text);font-size:15px;font-family:inherit;transition:all 0.25s;-webkit-appearance:none;appearance:none}.fg select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'%3E%3C/path%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:40px}.fg input:focus,.fg select:focus,.fg textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 4px rgba(99,102,241,0.06)}.fg textarea{resize:vertical;min-height:60px}.btn{width:100%;padding:13px;border:none;border-radius:var(--r2);font-size:15px;font-weight:600;cursor:pointer;transition:all 0.25s;font-family:inherit}.btn:active{transform:scale(0.97)}.btn-p{background:linear-gradient(135deg,var(--accent),#7c3aed);color:#fff}.btn-d{background:var(--red);color:#fff}.btn-o{background:transparent;border:2px solid var(--border);color:var(--text)}.btn-sm{width:auto;padding:8px 16px;font-size:13px;display:inline-flex;align-items:center;gap:5px}.admin-layout{display:flex;min-height:100vh}.sidebar{width:250px;min-width:250px;background:var(--bg2);border-right:1px solid var(--border);padding:18px;position:fixed;height:100vh;z-index:50;display:flex;flex-direction:column;transition:transform 0.3s}.sidebar h2{font-size:20px;margin-bottom:22px;background:linear-gradient(135deg,#818cf8,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;flex-shrink:0}.nav-item{padding:11px 14px;margin:2px 0;border-radius:var(--r2);cursor:pointer;transition:all 0.25s;color:var(--text2);font-weight:500;font-size:14px;user-select:none;flex-shrink:0}.nav-item:hover,.nav-item.active{background:rgba(99,102,241,0.1);color:#818cf8}.main-area{margin-left:250px;flex:1;padding:25px}.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px;margin-bottom:15px}.card h3{margin-bottom:15px;font-size:17px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}.stat{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;text-align:center}.stat .val{font-size:30px;font-weight:700;margin:4px 0}.stat .lbl{font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:1px}.preview-box{max-height:350px;overflow-y:auto;margin:10px 0}.preview-item{background:var(--input);border:1px solid var(--border);border-radius:8px;padding:10px;margin:6px 0;font-size:13px}.preview-item strong{color:#818cf8}.preview-item .opts{color:var(--text2);font-size:12px;margin-top:4px}.test-wrap{height:100vh;display:flex;flex-direction:column;background:var(--bg);position:fixed;inset:0;z-index:100}.test-top{background:var(--bg2);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;flex-wrap:wrap;gap:8px}.test-top h3{font-size:15px}.test-top small{color:var(--text2);font-size:11px;display:block}.timer{background:var(--card);border:2px solid var(--border);padding:8px 16px;border-radius:25px;font-size:19px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}.timer.warn{border-color:var(--yellow);color:var(--yellow);animation:pulse 1s infinite}.timer.danger{border-color:var(--red);color:var(--red);animation:shake 0.5s infinite;background:rgba(239,68,68,0.1)}.test-body{display:flex;flex:1;overflow:hidden}.q-area{flex:1;padding:25px 30px;overflow-y:auto}.q-num{font-size:13px;color:var(--text2);margin-bottom:6px}.q-text{background:var(--card);border:1px solid var(--border);padding:20px;border-radius:var(--radius);font-size:16px;line-height:1.6;margin-bottom:15px;word-wrap:break-word;white-space:pre-wrap}.opts{display:flex;flex-direction:column;gap:8px}.opt{padding:14px 16px;background:var(--card);border:2px solid var(--border);border-radius:var(--r2);cursor:pointer;transition:all 0.25s;font-size:14px;user-select:none;word-wrap:break-word}.opt:active{transform:scale(0.98)}.opt.sel{border-color:var(--accent);background:rgba(99,102,241,0.12);color:#818cf8}.nav-btns{display:flex;gap:8px;margin-top:20px;flex-wrap:wrap}.palette{width:280px;min-width:280px;background:var(--bg2);border-left:1px solid var(--border);padding:15px;overflow-y:auto}.pal-title{font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}.pal-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}.pal-btn{aspect-ratio:1;border:2px solid var(--border);border-radius:7px;background:var(--card);cursor:pointer;font-weight:600;font-size:13px;transition:all 0.25s;color:var(--text2);display:flex;align-items:center;justify-content:center}.pal-btn:active{transform:scale(0.93)}.pal-btn.ans{background:rgba(16,185,129,0.15);border-color:var(--green);color:var(--green)}.pal-btn.cur{background:var(--accent);border-color:#818cf8;color:#fff}.pal-btn.rev{background:rgba(245,158,11,0.15);border-color:var(--yellow);color:var(--yellow)}.res-wrap{min-height:100vh;padding:25px;display:flex;align-items:flex-start;justify-content:center}.res-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:30px;width:850px;max-width:100%}.score-circle{width:120px;height:120px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#7c3aed);display:flex;align-items:center;justify-content:center;margin:12px auto;font-size:32px;font-weight:800}.charts{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin:15px 0}.chart-box{background:var(--input);border-radius:var(--radius);padding:15px}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:400px}th,td{padding:10px;text-align:left;border-bottom:1px solid var(--border);font-size:13px}th{color:var(--text2);font-size:11px;text-transform:uppercase;letter-spacing:1px}.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-weight:700;font-size:11px}.badge-g{background:#ffd700;color:#000}.badge-s{background:#c0c0c0;color:#000}.badge-b{background:#cd7f32;color:#fff}.ans-detail{padding:10px;margin:6px 0;border-left:4px solid var(--green);background:var(--input);border-radius:0 8px 8px 0;font-size:13px}.ans-detail.wrong{border-left-color:var(--red)}@media(max-width:1024px){.stats{grid-template-columns:repeat(2,1fr)}.charts{grid-template-columns:1fr}}@media(max-width:768px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0);box-shadow:10px 0 30px rgba(0,0,0,0.5)}.main-area{margin-left:0}.menu-btn{display:flex!important;position:fixed;top:10px;left:10px;z-index:60;background:var(--accent);color:#fff;border:none;width:40px;height:40px;border-radius:10px;align-items:center;justify-content:center;font-size:20px;cursor:pointer}.test-body{flex-direction:column}.palette{width:100%;min-width:100%;max-height:100px;border-left:none;border-top:1px solid var(--border);display:flex;gap:8px;align-items:center;padding:8px;overflow-x:auto}.pal-grid{display:flex;gap:4px;flex-shrink:0}.pal-btn{width:32px;height:32px;min-width:32px;aspect-ratio:auto;font-size:10px}.pal-title{display:none}}@media(max-width:480px){.q-area{padding:12px}.palette{max-height:80px}.stats{grid-template-columns:1fr 1fr;gap:6px}}.menu-btn{display:none}.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:45}.sidebar-overlay.show{display:block}
+        :root{--bg:#0a0e17;--bg2:#111827;--card:#1a1f2e;--input:#1e2433;--text:#e2e8f0;--text2:#94a3b8;--accent:#6366f1;--green:#10b981;--red:#ef4444;--yellow:#f59e0b;--border:#1e293b;--radius:14px;--r2:10px;--orange:#f97316}
+        *{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;min-height:100dvh;-webkit-font-smoothing:antialiased;overflow-x:hidden;touch-action:manipulation}::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-3px)}40%,80%{transform:translateX(3px)}}.anim-fade{animation:fadeIn 0.3s ease forwards}.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--card);color:var(--text);padding:12px 24px;border-radius:25px;font-size:14px;font-weight:600;z-index:9999;box-shadow:0 8px 30px rgba(0,0,0,0.5);border:1px solid var(--border);opacity:0;pointer-events:none;transition:opacity 0.3s}.toast.show{opacity:1}.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:15px;background:radial-gradient(ellipse at top,#1a1f3e 0%,var(--bg) 70%)}.login-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:30px 25px;width:440px;max-width:100%;box-shadow:0 4px 25px rgba(0,0,0,0.5)}.login-card h1{font-size:26px;text-align:center;margin-bottom:4px;background:linear-gradient(135deg,#818cf8,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}.login-card .sub{text-align:center;color:var(--text2);margin-bottom:20px;font-size:13px}.tabs{display:grid;grid-template-columns:1fr 1fr;gap:5px;background:var(--input);padding:4px;border-radius:12px;margin-bottom:20px}.tab{padding:11px;text-align:center;border-radius:8px;cursor:pointer;font-weight:600;font-size:14px;transition:all 0.25s;color:var(--text2);user-select:none}.tab.active{background:var(--accent);color:#fff;box-shadow:0 4px 15px rgba(99,102,241,0.3)}.fg{margin-bottom:14px}.fg label{display:block;margin-bottom:4px;font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px}.fg input,.fg select,.fg textarea{width:100%;padding:13px 15px;background:var(--input);border:2px solid var(--border);border-radius:var(--r2);color:var(--text);font-size:15px;font-family:inherit;transition:all 0.25s;-webkit-appearance:none;appearance:none}.fg select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'%3E%3C/path%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:40px}.fg input:focus,.fg select:focus,.fg textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 4px rgba(99,102,241,0.06)}.fg textarea{resize:vertical;min-height:60px}.btn{width:100%;padding:13px;border:none;border-radius:var(--r2);font-size:15px;font-weight:600;cursor:pointer;transition:all 0.25s;font-family:inherit}.btn:active{transform:scale(0.97)}.btn-p{background:linear-gradient(135deg,var(--accent),#7c3aed);color:#fff}.btn-d{background:var(--red);color:#fff}.btn-o{background:transparent;border:2px solid var(--border);color:var(--text)}.btn-sm{width:auto;padding:8px 16px;font-size:13px;display:inline-flex;align-items:center;gap:5px}.admin-layout{display:flex;min-height:100vh}.sidebar{width:250px;min-width:250px;background:var(--bg2);border-right:1px solid var(--border);padding:18px;position:fixed;height:100vh;z-index:50;display:flex;flex-direction:column;transition:transform 0.3s}.sidebar h2{font-size:20px;margin-bottom:22px;background:linear-gradient(135deg,#818cf8,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;flex-shrink:0}.nav-item{padding:11px 14px;margin:2px 0;border-radius:var(--r2);cursor:pointer;transition:all 0.25s;color:var(--text2);font-weight:500;font-size:14px;user-select:none;flex-shrink:0}.nav-item:hover,.nav-item.active{background:rgba(99,102,241,0.1);color:#818cf8}.main-area{margin-left:250px;flex:1;padding:25px}.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px;margin-bottom:15px}.card h3{margin-bottom:15px;font-size:17px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}.stat{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;text-align:center}.stat .val{font-size:30px;font-weight:700;margin:4px 0}.stat .lbl{font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:1px}.scan-progress{background:var(--input);border-radius:8px;padding:3px;margin:10px 0}.scan-progress-bar{height:8px;background:var(--accent);border-radius:6px;transition:width 0.3s;width:0%}.preview-box{max-height:350px;overflow-y:auto;margin:10px 0}.preview-item{background:var(--input);border:1px solid var(--border);border-radius:8px;padding:10px;margin:6px 0;font-size:13px}.preview-item strong{color:#818cf8}.preview-item .opts{color:var(--text2);font-size:12px;margin-top:4px}.test-wrap{height:100vh;display:flex;flex-direction:column;background:var(--bg);position:fixed;inset:0;z-index:100}.test-top{background:var(--bg2);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;flex-wrap:wrap;gap:8px}.test-top h3{font-size:15px}.test-top small{color:var(--text2);font-size:11px;display:block}.timer{background:var(--card);border:2px solid var(--border);padding:8px 16px;border-radius:25px;font-size:19px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}.timer.warn{border-color:var(--yellow);color:var(--yellow);animation:pulse 1s infinite}.timer.danger{border-color:var(--red);color:var(--red);animation:shake 0.5s infinite;background:rgba(239,68,68,0.1)}.test-body{display:flex;flex:1;overflow:hidden}.q-area{flex:1;padding:25px 30px;overflow-y:auto}.q-num{font-size:13px;color:var(--text2);margin-bottom:6px}.q-text{background:var(--card);border:1px solid var(--border);padding:20px;border-radius:var(--radius);font-size:16px;line-height:1.6;margin-bottom:15px;word-wrap:break-word;white-space:pre-wrap}.opts{display:flex;flex-direction:column;gap:8px}.opt{padding:14px 16px;background:var(--card);border:2px solid var(--border);border-radius:var(--r2);cursor:pointer;transition:all 0.25s;font-size:14px;user-select:none;word-wrap:break-word}.opt:active{transform:scale(0.98)}.opt.sel{border-color:var(--accent);background:rgba(99,102,241,0.12);color:#818cf8}.nav-btns{display:flex;gap:8px;margin-top:20px;flex-wrap:wrap}.palette{width:280px;min-width:280px;background:var(--bg2);border-left:1px solid var(--border);padding:15px;overflow-y:auto}.pal-title{font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}.pal-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}.pal-btn{aspect-ratio:1;border:2px solid var(--border);border-radius:7px;background:var(--card);cursor:pointer;font-weight:600;font-size:13px;transition:all 0.25s;color:var(--text2);display:flex;align-items:center;justify-content:center}.pal-btn:active{transform:scale(0.93)}.pal-btn.ans{background:rgba(16,185,129,0.15);border-color:var(--green);color:var(--green)}.pal-btn.cur{background:var(--accent);border-color:#818cf8;color:#fff}.pal-btn.rev{background:rgba(245,158,11,0.15);border-color:var(--yellow);color:var(--yellow)}.res-wrap{min-height:100vh;padding:25px;display:flex;align-items:flex-start;justify-content:center}.res-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:30px;width:850px;max-width:100%}.score-circle{width:120px;height:120px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#7c3aed);display:flex;align-items:center;justify-content:center;margin:12px auto;font-size:32px;font-weight:800}.charts{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin:15px 0}.chart-box{background:var(--input);border-radius:var(--radius);padding:15px}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:400px}th,td{padding:10px;text-align:left;border-bottom:1px solid var(--border);font-size:13px}th{color:var(--text2);font-size:11px;text-transform:uppercase;letter-spacing:1px}.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-weight:700;font-size:11px}.badge-g{background:#ffd700;color:#000}.badge-s{background:#c0c0c0;color:#000}.badge-b{background:#cd7f32;color:#fff}.ans-detail{padding:10px;margin:6px 0;border-left:4px solid var(--green);background:var(--input);border-radius:0 8px 8px 0;font-size:13px}.ans-detail.wrong{border-left-color:var(--red)}@media(max-width:1024px){.stats{grid-template-columns:repeat(2,1fr)}.charts{grid-template-columns:1fr}}@media(max-width:768px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0);box-shadow:10px 0 30px rgba(0,0,0,0.5)}.main-area{margin-left:0}.menu-btn{display:flex!important;position:fixed;top:10px;left:10px;z-index:60;background:var(--accent);color:#fff;border:none;width:40px;height:40px;border-radius:10px;align-items:center;justify-content:center;font-size:20px;cursor:pointer}.test-body{flex-direction:column}.palette{width:100%;min-width:100%;max-height:100px;border-left:none;border-top:1px solid var(--border);display:flex;gap:8px;align-items:center;padding:8px;overflow-x:auto}.pal-grid{display:flex;gap:4px;flex-shrink:0}.pal-btn{width:32px;height:32px;min-width:32px;aspect-ratio:auto;font-size:10px}.pal-title{display:none}}@media(max-width:480px){.q-area{padding:12px}.palette{max-height:80px}.stats{grid-template-columns:1fr 1fr;gap:6px}}.menu-btn{display:none}.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:45}.sidebar-overlay.show{display:block}
     </style>
 </head>
 <body>
@@ -19,7 +19,7 @@
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
         
         let DB;
-        const dbReq = indexedDB.open('CBT_VFINAL', 1);
+        const dbReq = indexedDB.open('CBT_SCAN_COUNT', 1);
         dbReq.onupgradeneeded = e => {
             const d = e.target.result;
             if (!d.objectStoreNames.contains('tests')) d.createObjectStore('tests', { keyPath: 'id', autoIncrement: true });
@@ -27,7 +27,7 @@
             if (!d.objectStoreNames.contains('students')) d.createObjectStore('students', { keyPath: 'rollNo' });
         };
         dbReq.onsuccess = e => { DB = e.target.result; init(); };
-        dbReq.onerror = () => document.getElementById('app').innerHTML = '<h2 style="color:#fff;text-align:center;padding:50px">Database Error - Allow storage</h2>';
+        dbReq.onerror = () => document.getElementById('app').innerHTML = '<h2 style="color:#fff;text-align:center;padding:50px">Database Error</h2>';
         
         const dba = (s, d) => new Promise(r => { const t = DB.transaction(s, 'readwrite'); const q = t.objectStore(s).add(d); q.onsuccess = () => r(q.result); });
         const dbg = (s) => new Promise(r => { const t = DB.transaction(s, 'readonly'); const q = t.objectStore(s).getAll(); q.onsuccess = () => r(q.result); });
@@ -54,7 +54,7 @@
         function renderLogin() {
             state = { role: 'student', user: null, test: null, engine: null, timerInterval: null, testSubmitted: false };
             sessionStorage.removeItem('cbt_sess');
-            R(`<div class="login-wrap"><div class="login-card anim-fade"><h1>📚 ProCBT</h1><p class="sub">All Questions Extractor</p><div class="tabs"><div class="tab active" onclick="swTab('student',this)">👨‍🎓 Student</div><div class="tab" onclick="swTab('admin',this)">👨‍🏫 Admin</div></div><div id="loginForm"></div></div></div>`);
+            R(`<div class="login-wrap"><div class="login-card anim-fade"><h1>📚 ProCBT</h1><p class="sub">Scan → Count → Extract</p><div class="tabs"><div class="tab active" onclick="swTab('student',this)">👨‍🎓 Student</div><div class="tab" onclick="swTab('admin',this)">👨‍🏫 Admin</div></div><div id="loginForm"></div></div></div>`);
             swTab('student', document.querySelector('.tab'));
         }
         
@@ -64,16 +64,10 @@
             const tests = await dbg('tests');
             document.getElementById('loginForm').innerHTML = role === 'admin' ? 
                 `<div class="fg"><label>Admin ID</label><input id="aid" value="admin123"></div><div class="fg"><label>Password</label><input id="apass" type="password" value="admin123"></div><button class="btn btn-p" onclick="loginAdmin()">🔑 Login</button>` :
-                `<div class="fg"><label>Full Name</label><input id="sname" placeholder="Enter name"></div><div class="fg"><label>Roll Number</label><input id="sroll" placeholder="Enter roll"></div><div class="fg"><label>Select Test</label><select id="stest">${tests.map(t => `<option value="${t.id}">${t.name} (${t.total} Qs, ${t.duration}min)</option>`).join('')}</select></div><button class="btn btn-p" onclick="loginStudent()">▶️ Start Test</button>`;
+                `<div class="fg"><label>Full Name</label><input id="sname" placeholder="Enter name"></div><div class="fg"><label>Roll Number</label><input id="sroll" placeholder="Enter roll"></div><div class="fg"><label>Select Test</label><select id="stest">${tests.map(t => `<option value="${t.id}">${t.name} (${t.total} Qs)</option>`).join('')}</select></div><button class="btn btn-p" onclick="loginStudent()">▶️ Start Test</button>`;
         }
         
-        function loginAdmin() { 
-            if (document.getElementById('aid').value === 'admin123' && document.getElementById('apass').value === 'admin123') { 
-                sessionStorage.setItem('cbt_sess', JSON.stringify({ role: 'admin' })); 
-                renderAdmin(); 
-            } else toast('Invalid!'); 
-        }
-        
+        function loginAdmin() { if (document.getElementById('aid').value === 'admin123' && document.getElementById('apass').value === 'admin123') { sessionStorage.setItem('cbt_sess', JSON.stringify({ role: 'admin' })); renderAdmin(); } else toast('Invalid!'); }
         async function loginStudent() {
             const n = document.getElementById('sname').value, r = document.getElementById('sroll').value, tid = parseInt(document.getElementById('stest').value);
             if (!n || !r) return toast('Fill all fields');
@@ -83,134 +77,85 @@
             sessionStorage.setItem('cbt_sess', JSON.stringify({ role: 'student', name: n, rollNo: r, testId: tid }));
             startTest(test);
         }
-        
-        async function resumeStudent(d) { 
-            state.role = 'student'; state.user = { name: d.name, rollNo: d.rollNo }; 
-            const test = await dbgid('tests', d.testId); 
-            test ? (state.test = test, startTest(test)) : renderLogin(); 
-        }
+        async function resumeStudent(d) { state.role = 'student'; state.user = { name: d.name, rollNo: d.rollNo }; const test = await dbgid('tests', d.testId); test ? (state.test = test, startTest(test)) : renderLogin(); }
         
         class TestEngine {
             constructor(qs, dur) { this.qs = qs; this.rem = dur * 60; this.cur = 0; this.ans = {}; this.rev = new Set(); this.st = Date.now(); }
             gq() { return this.qs[this.cur]; } sel(i) { this.ans[this.cur] = i; } clr() { delete this.ans[this.cur]; }
             tr() { this.rev.has(this.cur) ? this.rev.delete(this.cur) : this.rev.add(this.cur); }
             nx() { if (this.cur < this.qs.length - 1) this.cur++; } pv() { if (this.cur > 0) this.cur--; } jp(i) { if (i >= 0 && i < this.qs.length) this.cur = i; }
-            calc() { 
-                let c = 0, inc = 0, u = 0; const det = []; 
-                this.qs.forEach((q, i) => { 
-                    const ua = this.ans[i]; 
-                    if (ua === undefined) { u++; det.push({ q: q.q, user: 'Not Attempted', correct: q.ans, ok: false }); } 
-                    else if (q.opts[ua] === q.ans) { c++; det.push({ q: q.q, user: q.opts[ua], correct: q.ans, ok: true }); } 
-                    else { inc++; det.push({ q: q.q, user: q.opts[ua], correct: q.ans, ok: false }); } 
-                }); 
-                return { total: this.qs.length, correct: c, incorrect: inc, unattempted: u, percentage: parseFloat(((c / this.qs.length) * 100).toFixed(1)), timeTaken: Math.floor((Date.now() - this.st) / 1000), details: det }; 
-            }
+            calc() { let c = 0, inc = 0, u = 0; const det = []; this.qs.forEach((q, i) => { const ua = this.ans[i]; if (ua === undefined) { u++; det.push({ q: q.q, user: 'Not Attempted', correct: q.ans, ok: false }); } else if (q.opts[ua] === q.ans) { c++; det.push({ q: q.q, user: q.opts[ua], correct: q.ans, ok: true }); } else { inc++; det.push({ q: q.q, user: q.opts[ua], correct: q.ans, ok: false }); } }); return { total: this.qs.length, correct: c, incorrect: inc, unattempted: u, percentage: parseFloat(((c / this.qs.length) * 100).toFixed(1)), timeTaken: Math.floor((Date.now() - this.st) / 1000), details: det }; }
         }
         
         function startTest(test) {
             state.testSubmitted = false; state.engine = new TestEngine(test.questions, test.duration);
             R(`<div class="test-wrap"><div class="test-top"><div><h3>${test.name}</h3><small>${state.user.name} | ${state.user.rollNo}</small></div><div class="timer" id="td">00:00</div><div style="display:flex;gap:6px"><button class="btn btn-o btn-sm" onclick="tr()">📌</button><button class="btn btn-d btn-sm" onclick="st()">📝 Submit</button></div></div><div class="test-body"><div class="q-area" id="qA"></div><div class="palette"><div class="pal-title">Palette</div><div class="pal-grid" id="qG"></div></div></div></div>`);
-            upd(); 
-            state.timerInterval = setInterval(() => { 
-                if (!state.engine || state.testSubmitted) { clearInterval(state.timerInterval); return; } 
-                state.engine.rem--; 
-                const td = document.getElementById('td'); 
-                if (td) { 
-                    const m = Math.floor(state.engine.rem / 60), s = state.engine.rem % 60; 
-                    td.textContent = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`; 
-                    td.className = 'timer' + (state.engine.rem <= 60 ? ' danger' : state.engine.rem <= 300 ? ' warn' : ''); 
-                } 
-                if (state.engine.rem <= 0) { clearInterval(state.timerInterval); st(true); } 
-            }, 1000);
+            upd(); state.timerInterval = setInterval(() => { if (!state.engine || state.testSubmitted) { clearInterval(state.timerInterval); return; } state.engine.rem--; const td = document.getElementById('td'); if (td) { const m = Math.floor(state.engine.rem / 60), s = state.engine.rem % 60; td.textContent = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`; td.className = 'timer' + (state.engine.rem <= 60 ? ' danger' : state.engine.rem <= 300 ? ' warn' : ''); } if (state.engine.rem <= 0) { clearInterval(state.timerInterval); st(true); } }, 1000);
         }
         
-        function upd() { 
-            if (!state.engine || state.testSubmitted) return; 
-            const q = state.engine.gq(), qA = document.getElementById('qA'), qG = document.getElementById('qG'); 
-            if (!qA || !qG) return; 
-            qA.innerHTML = `<div class="anim-fade"><div class="q-num">Q ${state.engine.cur + 1}/${state.engine.qs.length}</div><div class="q-text">${q.q}</div><div class="opts">${q.opts.map((o, i) => `<div class="opt ${state.engine.ans[state.engine.cur] === i ? 'sel' : ''}" onclick="so(${i})"><b>${String.fromCharCode(65 + i)}.</b> ${o}</div>`).join('')}</div><div class="nav-btns"><button class="btn btn-o btn-sm" onclick="pv()" ${state.engine.cur === 0 ? 'disabled' : ''}>◀</button><button class="btn btn-o btn-sm" onclick="cl()">Clear</button><button class="btn btn-p btn-sm" onclick="nx()" ${state.engine.cur === state.engine.qs.length - 1 ? 'disabled' : ''}>▶</button></div></div>`; 
-            qG.innerHTML = state.engine.qs.map((_, i) => `<div class="pal-btn ${i === state.engine.cur ? 'cur' : state.engine.rev.has(i) ? 'rev' : state.engine.ans[i] !== undefined ? 'ans' : ''}" onclick="jp(${i})">${i + 1}</div>`).join(''); 
-        }
+        function upd() { if (!state.engine || state.testSubmitted) return; const q = state.engine.gq(), qA = document.getElementById('qA'), qG = document.getElementById('qG'); if (!qA || !qG) return; qA.innerHTML = `<div class="anim-fade"><div class="q-num">Q ${state.engine.cur + 1}/${state.engine.qs.length}</div><div class="q-text">${q.q}</div><div class="opts">${q.opts.map((o, i) => `<div class="opt ${state.engine.ans[state.engine.cur] === i ? 'sel' : ''}" onclick="so(${i})"><b>${String.fromCharCode(65 + i)}.</b> ${o}</div>`).join('')}</div><div class="nav-btns"><button class="btn btn-o btn-sm" onclick="pv()" ${state.engine.cur === 0 ? 'disabled' : ''}>◀</button><button class="btn btn-o btn-sm" onclick="cl()">Clear</button><button class="btn btn-p btn-sm" onclick="nx()" ${state.engine.cur === state.engine.qs.length - 1 ? 'disabled' : ''}>▶</button></div></div>`; qG.innerHTML = state.engine.qs.map((_, i) => `<div class="pal-btn ${i === state.engine.cur ? 'cur' : state.engine.rev.has(i) ? 'rev' : state.engine.ans[i] !== undefined ? 'ans' : ''}" onclick="jp(${i})">${i + 1}</div>`).join(''); }
         
         function so(i) { state.engine.sel(i); upd(); } function cl() { state.engine.clr(); upd(); } function tr() { state.engine.tr(); upd(); }
         function nx() { state.engine.nx(); upd(); } function pv() { state.engine.pv(); upd(); } function jp(i) { state.engine.jp(i); upd(); }
         
-        async function st(auto = false) { 
-            if (!auto && !confirm('Submit?')) return; 
-            state.testSubmitted = true; clearInterval(state.timerInterval); 
-            const r = state.engine.calc(), sess = JSON.parse(sessionStorage.getItem('cbt_sess')); 
-            await dba('results', { testId: state.test.id, tname: state.test.name, sname: sess.name, sroll: sess.rollNo, ...r, date: new Date().toISOString() }); 
-            const all = (await dbgi('results', 'testId', state.test.id)).sort((a, b) => b.percentage - a.percentage); 
-            renderRes(r, all.findIndex(x => x.sroll === sess.rollNo) + 1, all); 
-        }
+        async function st(auto = false) { if (!auto && !confirm('Submit?')) return; state.testSubmitted = true; clearInterval(state.timerInterval); const r = state.engine.calc(), sess = JSON.parse(sessionStorage.getItem('cbt_sess')); await dba('results', { testId: state.test.id, tname: state.test.name, sname: sess.name, sroll: sess.rollNo, ...r, date: new Date().toISOString() }); const all = (await dbgi('results', 'testId', state.test.id)).sort((a, b) => b.percentage - a.percentage); renderRes(r, all.findIndex(x => x.sroll === sess.rollNo) + 1, all); }
         
-        function renderRes(r, rank, all) { 
-            R(`<div class="res-wrap"><div class="res-card anim-fade"><h2 style="text-align:center">✅ Done!</h2><div class="score-circle">${r.percentage}%</div><p style="text-align:center;color:var(--text2)">#${rank}/${all.length} | ${Math.floor(r.timeTaken/60)}m</p><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0"><div class="stat"><div class="val" style="color:var(--green)">${r.correct}</div><div class="lbl">✅</div></div><div class="stat"><div class="val" style="color:var(--red)">${r.incorrect}</div><div class="lbl">❌</div></div><div class="stat"><div class="val" style="color:var(--yellow)">${r.unattempted}</div><div class="lbl">⚪</div></div></div><div class="charts"><div class="chart-box"><canvas id="c1"></canvas></div><div class="chart-box"><canvas id="c2"></canvas></div></div><div class="card"><h4>🏆 Leaderboard</h4><table><thead><tr><th>Rank</th><th>Student</th><th>Score</th></tr></thead><tbody>${all.slice(0,5).map((x,i)=>`<tr><td><span class="badge ${i===0?'badge-g':i===1?'badge-s':i===2?'badge-b':''}">#${i+1}</span></td><td>${x.sname}</td><td><b>${x.percentage}%</b></td></tr>`).join('')}</tbody></table></div><div class="card"><h4>📋 Details</h4>${r.details.map((d,i)=>`<div class="ans-detail ${d.ok?'':'wrong'}"><b>Q${i+1}:</b> ${d.q}<br><small>Your: <span style="color:${d.ok?'var(--green)':'var(--red)'}">${d.user}</span> | Correct: <span style="color:var(--green)">${d.correct||'N/A'}</span></small></div>`).join('')}</div><div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-p btn-sm" onclick="renderLogin()">🏠</button><button class="btn btn-o btn-sm" onclick="retake()">🔄 Retake</button></div></div></div>`); 
-            setTimeout(() => { 
-                new Chart(document.getElementById('c1'), { type: 'doughnut', data: { labels: ['Correct','Incorrect','Unattempted'], datasets: [{ data: [r.correct,r.incorrect,r.unattempted], backgroundColor: ['#10b981','#ef4444','#f59e0b'], borderColor: '#1a1f2e', borderWidth: 2 }] }, options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 11 } } } } } }); 
-                new Chart(document.getElementById('c2'), { type: 'bar', data: { labels: ['Score'], datasets: [{ data: [r.percentage], backgroundColor: '#6366f1', borderRadius: 6 }] }, options: { responsive: true, scales: { y: { max: 100, grid: { color: '#1e293b' }, ticks: { color: '#94a3b8' } } }, plugins: { legend: { display: false } } } }); 
-            }, 100); 
-        }
-        function retake() { if (state.test) startTest(state.test); }
+        function renderRes(r, rank, all) { R(`<div class="res-wrap"><div class="res-card anim-fade"><h2 style="text-align:center">✅ Done!</h2><div class="score-circle">${r.percentage}%</div><p style="text-align:center;color:var(--text2)">#${rank}/${all.length} | ${Math.floor(r.timeTaken/60)}m</p><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0"><div class="stat"><div class="val" style="color:var(--green)">${r.correct}</div><div class="lbl">✅</div></div><div class="stat"><div class="val" style="color:var(--red)">${r.incorrect}</div><div class="lbl">❌</div></div><div class="stat"><div class="val" style="color:var(--yellow)">${r.unattempted}</div><div class="lbl">⚪</div></div></div><div class="charts"><div class="chart-box"><canvas id="c1"></canvas></div><div class="chart-box"><canvas id="c2"></canvas></div></div><div class="card"><h4>🏆 Leaderboard</h4><table><thead><tr><th>Rank</th><th>Student</th><th>Score</th></tr></thead><tbody>${all.slice(0,5).map((x,i)=>`<tr><td><span class="badge ${i===0?'badge-g':i===1?'badge-s':i===2?'badge-b':''}">#${i+1}</span></td><td>${x.sname}</td><td><b>${x.percentage}%</b></td></tr>`).join('')}</tbody></table></div><button class="btn btn-p btn-sm" onclick="renderLogin()" style="margin-top:10px">🏠 Login</button></div></div>`); setTimeout(() => { new Chart(document.getElementById('c1'), { type: 'doughnut', data: { labels: ['Correct','Incorrect','Unattempted'], datasets: [{ data: [r.correct,r.incorrect,r.unattempted], backgroundColor: ['#10b981','#ef4444','#f59e0b'] }] }, options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8' } } } } }); new Chart(document.getElementById('c2'), { type: 'bar', data: { labels: ['Score'], datasets: [{ data: [r.percentage], backgroundColor: '#6366f1' }] }, options: { responsive: true, scales: { y: { max: 100 } } } }); }, 100); }
         
-        function renderAdmin() { 
-            R(`<div class="menu-btn" onclick="tsb()">☰</div><div class="sidebar-overlay" id="ov" onclick="tsb()"></div><div class="admin-layout"><div class="sidebar" id="sb"><h2>📊 ProCBT</h2><div class="nav-item active" onclick="at('upload',this)">📤 Upload</div><div class="nav-item" onclick="at('results',this)">📈 Results</div><div class="nav-item" onclick="at('rankings',this)">🏆 Rankings</div><div class="nav-item" onclick="renderLogin()">🚪 Logout</div></div><div class="main-area" id="aa"></div></div>`); 
-            at('upload', document.querySelector('.nav-item')); 
-        }
+        function renderAdmin() { R(`<div class="menu-btn" onclick="tsb()">☰</div><div class="sidebar-overlay" id="ov" onclick="tsb()"></div><div class="admin-layout"><div class="sidebar" id="sb"><h2>📊 ProCBT</h2><div class="nav-item active" onclick="at('upload',this)">📤 Upload</div><div class="nav-item" onclick="at('results',this)">📈 Results</div><div class="nav-item" onclick="at('rankings',this)">🏆 Rankings</div><div class="nav-item" onclick="renderLogin()">🚪 Logout</div></div><div class="main-area" id="aa"></div></div>`); at('upload', document.querySelector('.nav-item')); }
         function tsb() { const sb = document.getElementById('sb'), ov = document.getElementById('ov'); sb.classList.toggle('open'); ov.classList.toggle('show'); }
         
-        async function us() { 
-            const t = await dbg('tests'), r = await dbg('results'), s = await dbg('students'); 
-            const h = `<div class="stats"><div class="stat"><div class="val" style="color:var(--accent)">${t.length}</div><div class="lbl">Tests</div></div><div class="stat"><div class="val" style="color:var(--green)">${s.length}</div><div class="lbl">Students</div></div><div class="stat"><div class="val" style="color:var(--yellow)">${r.length}</div><div class="lbl">Taken</div></div><div class="stat"><div class="val" style="color:var(--accent)">${r.length>0?(r.reduce((a,x)=>a+x.percentage,0)/r.length).toFixed(1):0}%</div><div class="lbl">Avg</div></div></div>`; 
-            const aa = document.getElementById('aa'); if (aa) { const old = aa.querySelector('.stats'); if (old) old.outerHTML = h; else aa.insertAdjacentHTML('afterbegin', h); } 
-        }
+        async function us() { const t = await dbg('tests'), r = await dbg('results'), s = await dbg('students'); const h = `<div class="stats"><div class="stat"><div class="val" style="color:var(--accent)">${t.length}</div><div class="lbl">Tests</div></div><div class="stat"><div class="val" style="color:var(--green)">${s.length}</div><div class="lbl">Students</div></div><div class="stat"><div class="val" style="color:var(--yellow)">${r.length}</div><div class="lbl">Taken</div></div><div class="stat"><div class="val" style="color:var(--accent)">${r.length>0?(r.reduce((a,x)=>a+x.percentage,0)/r.length).toFixed(1):0}%</div><div class="lbl">Avg</div></div></div>`; const aa = document.getElementById('aa'); if (aa) { const old = aa.querySelector('.stats'); if (old) old.outerHTML = h; else aa.insertAdjacentHTML('afterbegin', h); } }
         
-        async function at(tab, el) { 
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); el.classList.add('active'); 
-            const aa = document.getElementById('aa'); 
-            if (tab === 'upload') { 
-                aa.innerHTML = `<div class="stats"></div><div class="card anim-fade"><h3>📤 Upload Test (ALL Questions Extracted)</h3><div class="fg"><label>Test Name</label><input id="tname" placeholder="Test name"></div><div class="fg"><label>Subject</label><input id="tsub" placeholder="Subject"></div><div class="fg"><label>Duration (min)</label><input id="tdur" type="number" value="60" min="1"></div><div class="fg"><label>Upload PDF</label><input id="tpdf" type="file" accept=".pdf"></div><div class="fg"><label>Answer Key (optional)</label><textarea id="tkey" rows="2" placeholder="1:c, 2:b, 3:a"></textarea></div><button class="btn btn-p" onclick="ut()">🔄 Extract ALL Questions</button><div id="upStatus" style="margin-top:10px"></div><div id="previewArea" style="margin-top:15px"></div></div>`; 
-            } else if (tab === 'results') { 
-                const r = await dbg('results'); 
-                aa.innerHTML = `<div class="stats"></div><div class="card"><h3>📈 Results (${r.length})</h3>${r.length===0?'<p style="color:var(--text2)">None</p>':`<div class="table-wrap"><table><thead><tr><th>Student</th><th>Test</th><th>Score</th><th>Time</th></tr></thead><tbody>${r.map(x=>`<tr><td>${x.sname}</td><td>${x.tname}</td><td><b>${x.percentage}%</b></td><td>${Math.floor(x.timeTaken/60)}m</td></tr>`).join('')}</tbody></table></div>`}</div>`; 
-            } else if (tab === 'rankings') { 
-                const t = await dbg('tests'), ar = await dbg('results'); let h = '<div class="stats"></div>'; 
-                for (const x of t) { const tr = ar.filter(r => r.testId === x.id).sort((a, b) => b.percentage - a.percentage); h += `<div class="card"><h4>🏆 ${x.name}</h4><div class="table-wrap"><table><thead><tr><th>Rank</th><th>Student</th><th>Score</th></tr></thead><tbody>${tr.slice(0,10).map((r,i)=>`<tr><td><span class="badge ${i===0?'badge-g':i===1?'badge-s':i===2?'badge-b':''}">#${i+1}</span></td><td>${r.sname}</td><td><b>${r.percentage}%</b></td></tr>`).join('')}</tbody></table></div></div>`; } 
-                aa.innerHTML = h; 
-            } 
-            us(); 
-        }
+        async function at(tab, el) { document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); el.classList.add('active'); const aa = document.getElementById('aa'); if (tab === 'upload') { aa.innerHTML = `<div class="stats"></div><div class="card anim-fade"><h3>📤 Upload Test</h3><div class="fg"><label>Test Name</label><input id="tname" placeholder="Test name"></div><div class="fg"><label>Subject</label><input id="tsub" placeholder="Subject"></div><div class="fg"><label>Duration (min)</label><input id="tdur" type="number" value="60" min="1"></div><div class="fg"><label>Upload PDF</label><input id="tpdf" type="file" accept=".pdf"></div><div class="fg"><label>Answer Key (optional)</label><textarea id="tkey" rows="2" placeholder="1:c, 2:b, 3:a"></textarea></div><button class="btn btn-p" onclick="ut()">🔄 SCAN → COUNT → EXTRACT</button><div id="scanSteps" style="margin-top:15px"></div><div id="upStatus" style="margin-top:10px"></div><div id="previewArea" style="margin-top:15px"></div></div>`; } else if (tab === 'results') { const r = await dbg('results'); aa.innerHTML = `<div class="stats"></div><div class="card"><h3>📈 Results (${r.length})</h3>${r.length===0?'<p style="color:var(--text2)">None</p>':`<div class="table-wrap"><table><thead><tr><th>Student</th><th>Test</th><th>Score</th><th>Time</th></tr></thead><tbody>${r.map(x=>`<tr><td>${x.sname}</td><td>${x.tname}</td><td><b>${x.percentage}%</b></td><td>${Math.floor(x.timeTaken/60)}m</td></tr>`).join('')}</tbody></table></div>`}</div>`; } else if (tab === 'rankings') { const t = await dbg('tests'), ar = await dbg('results'); let h = '<div class="stats"></div>'; for (const x of t) { const tr = ar.filter(r => r.testId === x.id).sort((a, b) => b.percentage - a.percentage); h += `<div class="card"><h4>🏆 ${x.name}</h4><table><thead><tr><th>Rank</th><th>Student</th><th>Score</th></tr></thead><tbody>${tr.slice(0,10).map((r,i)=>`<tr><td><span class="badge ${i===0?'badge-g':i===1?'badge-s':i===2?'badge-b':''}">#${i+1}</span></td><td>${r.sname}</td><td><b>${r.percentage}%</b></td></tr>`).join('')}</tbody></table></div>`; } aa.innerHTML = h; } us(); }
         
-        // ===== THE ULTIMATE PARSER - EXTRACTS ALL QUESTIONS =====
+        // ===== 3-STEP PROCESS: SCAN → COUNT → EXTRACT =====
         async function ut() {
-            const name = document.getElementById('tname').value, sub = document.getElementById('tsub').value;
-            const dur = parseInt(document.getElementById('tdur').value), file = document.getElementById('tpdf').files[0];
-            const keyText = document.getElementById('tkey').value, status = document.getElementById('upStatus');
+            const name = document.getElementById('tname').value;
+            const sub = document.getElementById('tsub').value;
+            const dur = parseInt(document.getElementById('tdur').value);
+            const file = document.getElementById('tpdf').files[0];
+            const keyText = document.getElementById('tkey').value;
+            const scanSteps = document.getElementById('scanSteps');
+            const status = document.getElementById('upStatus');
             const preview = document.getElementById('previewArea');
             
             if (!name || !file) { status.innerHTML = '<span style="color:var(--red)">❌ Fill all fields & select PDF</span>'; return; }
             
-            status.innerHTML = '<span style="color:var(--accent)">⏳ Reading PDF...</span>';
+            // Reset
+            scanSteps.innerHTML = '';
+            status.innerHTML = '';
+            preview.innerHTML = '';
             
             try {
+                // ========== STEP 1: SCAN PDF ==========
+                scanSteps.innerHTML = `
+                    <div class="card" style="border-left:4px solid var(--accent)">
+                        <h4 style="color:var(--accent)">📄 STEP 1: Scanning PDF Pages...</h4>
+                        <div class="scan-progress"><div class="scan-progress-bar" id="scanBar" style="width:0%"></div></div>
+                        <p id="scanStatus" style="color:var(--text2);font-size:13px">Starting scan...</p>
+                    </div>
+                `;
+                
                 const arrayBuffer = await file.arrayBuffer();
                 const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                const totalPages = pdf.numPages;
                 
-                // Extract ALL text from ALL pages
                 let allLines = [];
                 
-                for (let i = 1; i <= pdf.numPages; i++) {
-                    status.innerHTML = `<span style="color:var(--accent)">📄 Page ${i}/${pdf.numPages}...</span>`;
+                for (let i = 1; i <= totalPages; i++) {
+                    const progress = Math.round((i / totalPages) * 100);
+                    document.getElementById('scanBar').style.width = progress + '%';
+                    document.getElementById('scanStatus').textContent = `Scanning page ${i} of ${totalPages} (${progress}%)`;
+                    
                     const page = await pdf.getPage(i);
                     const content = await page.getTextContent();
-                    
                     const items = content.items;
                     let currentLine = '';
                     let lastY = null;
                     
                     for (const item of items) {
                         const currentY = item.transform[5];
-                        
                         if (lastY !== null && Math.abs(currentY - lastY) > 4) {
                             if (currentLine.trim()) allLines.push(currentLine.trim());
                             currentLine = item.str;
@@ -222,21 +167,61 @@
                     if (currentLine.trim()) allLines.push(currentLine.trim());
                 }
                 
-                status.innerHTML = `<span style="color:var(--accent)">🔍 Parsing ${allLines.length} lines...</span>`;
+                document.getElementById('scanBar').style.width = '100%';
+                document.getElementById('scanStatus').textContent = `✅ Scan complete! ${totalPages} pages, ${allLines.length} lines extracted.`;
                 
-                // PARSE ALL QUESTIONS
-                const questions = parseAllQuestions(allLines);
+                // ========== STEP 2: COUNT QUESTIONS ==========
+                scanSteps.innerHTML += `
+                    <div class="card" style="border-left:4px solid var(--orange);margin-top:10px">
+                        <h4 style="color:var(--orange)">🔢 STEP 2: Counting Questions...</h4>
+                        <p id="countStatus" style="color:var(--text2);font-size:13px">Analyzing text patterns...</p>
+                    </div>
+                `;
+                
+                // Count question numbers found
+                let questionNumbers = [];
+                for (const line of allLines) {
+                    const qMatch = line.match(/^(\d+)\s*[.)\s-]/);
+                    if (qMatch) {
+                        const num = parseInt(qMatch[1]);
+                        if (!questionNumbers.includes(num)) {
+                            questionNumbers.push(num);
+                        }
+                    }
+                }
+                questionNumbers.sort((a, b) => a - b);
+                
+                document.getElementById('countStatus').innerHTML = `
+                    ✅ Found <b style="color:var(--orange);font-size:18px">${questionNumbers.length}</b> question numbers in PDF<br>
+                    <small style="color:var(--text2)">Range: Q${questionNumbers[0] || 0} to Q${questionNumbers[questionNumbers.length-1] || 0}</small>
+                `;
+                
+                // ========== STEP 3: EXTRACT ALL QUESTIONS ==========
+                scanSteps.innerHTML += `
+                    <div class="card" style="border-left:4px solid var(--green);margin-top:10px">
+                        <h4 style="color:var(--green)">📋 STEP 3: Extracting All Questions...</h4>
+                        <div class="scan-progress"><div class="scan-progress-bar" id="extractBar" style="width:0%;background:var(--green)"></div></div>
+                        <p id="extractStatus" style="color:var(--text2);font-size:13px">Starting extraction...</p>
+                    </div>
+                `;
+                
+                const questions = extractAllQuestions(allLines, (progress, msg) => {
+                    document.getElementById('extractBar').style.width = progress + '%';
+                    document.getElementById('extractStatus').textContent = msg;
+                });
                 
                 if (questions.length > 0) {
+                    document.getElementById('extractBar').style.width = '100%';
+                    document.getElementById('extractStatus').innerHTML = `✅ <b style="color:var(--green);font-size:18px">${questions.length} questions extracted successfully!</b>`;
+                    
                     // Preview
-                    const previewMax = Math.min(30, questions.length);
-                    preview.innerHTML = `<div class="card"><h4>📋 EXTRACTED: ${questions.length} Questions</h4><div class="preview-box">${questions.slice(0, previewMax).map(q => `<div class="preview-item"><strong>Q${q.id}:</strong> ${q.q}<div class="opts">${q.opts.map((o,i) => `${String.fromCharCode(65+i)}) ${o}`).join(' | ')}</div></div>`).join('')}${questions.length > previewMax ? `<p style="color:var(--text2);text-align:center;margin-top:8px">... +${questions.length - previewMax} more questions</p>` : ''}</div></div>`;
+                    const previewMax = Math.min(50, questions.length);
+                    preview.innerHTML = `<div class="card"><h4>📋 Preview: ${questions.length} Questions</h4><div class="preview-box">${questions.slice(0, previewMax).map(q => `<div class="preview-item"><strong>Q${q.id}:</strong> ${q.q}<div class="opts">${q.opts.map((o,i) => `${String.fromCharCode(65+i)}) ${o}`).join(' | ')}</div></div>`).join('')}${questions.length > previewMax ? `<p style="color:var(--text2);text-align:center;margin-top:8px">... +${questions.length - previewMax} more questions (scroll in test mode to see all)</p>` : ''}</div></div>`;
                     
                     // Apply answer key
                     if (keyText.trim()) {
                         const key = parseKey(keyText);
                         applyKey(questions, key);
-                        status.innerHTML += '<br><span style="color:var(--green)">✅ Answer key applied!</span>';
                     }
                     
                     // Save
@@ -246,7 +231,7 @@
                         createdAt: new Date().toISOString()
                     });
                     
-                    status.innerHTML = `<span style="color:var(--green)">✅ SUCCESS! "${name}" created with ALL ${questions.length} questions!</span>`;
+                    status.innerHTML = `<span style="color:var(--green);font-size:16px">✅ SUCCESS! "${name}" created with ALL ${questions.length} questions!</span>`;
                     document.getElementById('tname').value = ''; 
                     document.getElementById('tsub').value = ''; 
                     document.getElementById('tkey').value = ''; 
@@ -254,153 +239,103 @@
                     us();
                     
                 } else {
-                    status.innerHTML = '<span style="color:var(--red)">❌ No questions found!</span>';
-                    preview.innerHTML = `<div class="card"><h4>📄 Raw Text</h4><pre style="background:var(--input);padding:15px;border-radius:8px;max-height:300px;overflow:auto;font-size:12px;color:var(--text2);white-space:pre-wrap">${allLines.slice(0, 50).join('\n')}</pre></div>`;
+                    status.innerHTML = '<span style="color:var(--red)">❌ No questions could be extracted!</span>';
+                    preview.innerHTML = `<div class="card"><h4>📄 Raw Text (first 100 lines)</h4><pre style="background:var(--input);padding:15px;border-radius:8px;max-height:300px;overflow:auto;font-size:12px;color:var(--text2);white-space:pre-wrap">${allLines.slice(0, 100).join('\n')}</pre></div>`;
                 }
                 
             } catch (e) {
-                status.innerHTML = `<span style="color:var(--red)">❌ ${e.message}</span>`;
+                status.innerHTML = `<span style="color:var(--red)">❌ Error: ${e.message}</span>`;
                 console.error(e);
             }
         }
         
-        function parseAllQuestions(lines) {
+        // ===== THE FINAL EXTRACTOR - GETS EVERY SINGLE QUESTION =====
+        function extractAllQuestions(lines, progressCallback) {
             const questions = [];
-            let i = 0;
+            const totalLines = lines.length;
             
-            while (i < lines.length) {
+            for (let i = 0; i < lines.length; i++) {
                 const line = lines[i];
+                const progress = Math.round((i / totalLines) * 100);
+                if (progressCallback && i % 10 === 0) progressCallback(progress, `Processing line ${i}/${totalLines}... Found ${questions.length} questions so far`);
                 
-                // Check if this line starts a question: "1.", "1)", "1 ", "Q1.", etc.
+                // Match question start: "1.", "1)", "Q1.", "1 -", "1 .", etc.
                 const qMatch = line.match(/^(?:Q\.?\s*)?(\d+)\s*[.)\s-]+(.+)/i);
                 
-                if (qMatch) {
-                    const qNum = parseInt(qMatch[1]);
-                    let qText = qMatch[2].trim();
-                    const options = [];
-                    
-                    // Check if options are on the SAME line (inline)
-                    // Pattern: "a) ... b) ... c) ... d) ..."
-                    const inlineOpts = qText.match(/\s*\(?([a-dA-D])\)?\s*[.)\s-]+/g);
-                    
-                    if (inlineOpts && inlineOpts.length >= 2) {
-                        // Options are INLINE - split them
-                        const parts = qText.split(/\s*\(?[a-dA-D]\)?\s*[.)\s-]+/);
-                        const questionPart = parts[0].trim();
-                        
-                        // Extract options text
-                        const optMatches = [];
-                        const optRegex = /\(?([a-dA-D])\)?\s*[.)\s-]+([^a-dA-D]+?)(?=\s*\(?[a-dA-D]\)?\s*[.)\s-]|$)/gi;
-                        let m;
-                        while ((m = optRegex.exec(qText)) !== null) {
-                            optMatches.push(m[2].trim());
-                        }
-                        
-                        if (optMatches.length >= 2) {
-                            qText = questionPart;
-                            optMatches.forEach(o => options.push(o));
-                        }
-                    }
-                    
-                    // If no inline options found, check next lines
-                    if (options.length < 2) {
-                        i++;
-                        while (i < lines.length) {
-                            const nextLine = lines[i];
-                            
-                            // Check if this is an option line: "a)", "A)", "(a)", "a.", etc.
-                            const optMatch = nextLine.match(/^\(?([a-dA-D])\)?\s*[.)\s-]+(.+)/);
-                            
-                            if (optMatch) {
-                                const letter = optMatch[1].toUpperCase();
-                                const expectedLetter = String.fromCharCode(65 + options.length);
-                                
-                                if (letter === expectedLetter) {
-                                    options.push(optMatch[2].trim());
-                                }
-                                i++;
-                            } else if (/^\d+[.)\s-]/.test(nextLine)) {
-                                // Next question found, stop
-                                break;
-                            } else {
-                                // Might be continuation of question text
-                                if (options.length === 0) {
-                                    qText += ' ' + nextLine;
-                                }
-                                i++;
-                                // Break if we've gone too far without finding options
-                                if (i > lines.length || (options.length === 0 && (i - questions.length) > 5)) break;
-                            }
-                        }
-                    } else {
-                        i++;
-                    }
-                    
-                    // Add question if it has enough options
-                    if (qText.length > 2 && options.length >= 2) {
-                        questions.push({
-                            id: questions.length + 1,
-                            q: qText,
-                            opts: options.slice(0, 4), // Max 4 options
-                            ans: null
-                        });
-                    }
-                } else {
-                    i++;
-                }
-            }
-            
-            // If still not enough questions, try aggressive parsing
-            if (questions.length < 3) {
-                return parseAggressive(lines);
-            }
-            
-            return questions;
-        }
-        
-        // Aggressive fallback parser
-        function parseAggressive(lines) {
-            const questions = [];
-            const fullText = lines.join(' ');
-            
-            // Split by question numbers
-            const chunks = fullText.split(/(?=\d+\s*[.)]\s)/);
-            
-            for (const chunk of chunks) {
-                const trimmed = chunk.trim();
-                if (!trimmed || trimmed.length < 10) continue;
+                if (!qMatch) continue;
                 
-                // Extract question number
-                const numMatch = trimmed.match(/^(\d+)\s*[.)]\s*(.+)/);
-                if (!numMatch) continue;
-                
-                let qText = numMatch[2];
+                const qNum = parseInt(qMatch[1]);
+                let qText = qMatch[2].trim();
                 const options = [];
                 
-                // Find all options
-                const optRegex = /\(?([a-dA-D])\)?\s*[.)\s-]+([^a-dA-D]+?)(?=\s*\(?[a-dA-D]\)?\s*[.)\s-]|$)/gi;
-                let m;
-                while ((m = optRegex.exec(trimmed)) !== null) {
-                    options.push(m[2].trim());
-                }
+                // Check for INLINE options on same line: "a) opt1 b) opt2 c) opt3 d) opt4"
+                const inlineCheck = qText.match(/\(?[a-dA-D]\)?\s*[.)\s-]/g);
                 
-                // Clean question text
-                if (options.length >= 2) {
-                    options.forEach(o => {
-                        qText = qText.replace(o, '');
-                    });
-                    qText = qText.replace(/\(?[a-dA-D]\)?\s*[.)\s-]+/g, '').replace(/\s+/g, ' ').trim();
+                if (inlineCheck && inlineCheck.length >= 2) {
+                    // Split inline options
+                    const optRegex = /\(?([a-dA-D])\)?\s*[.)\s-]+([^a-dA-D]+?)(?=\s*\(?[a-dA-D]\)?\s*[.)\s-]|$)/gi;
+                    let m;
+                    const optTexts = [];
                     
-                    if (qText.length > 2 && options.length >= 2) {
-                        questions.push({
-                            id: questions.length + 1,
-                            q: qText,
-                            opts: options.slice(0, 4),
-                            ans: null
-                        });
+                    // Extract question part (before first option)
+                    const firstOptIdx = qText.search(/\(?[a-dA-D]\)?\s*[.)\s-]/);
+                    if (firstOptIdx > 0) {
+                        qText = qText.substring(0, firstOptIdx).trim();
+                    }
+                    
+                    // Extract options
+                    const remainingText = qMatch[2].substring(firstOptIdx > 0 ? firstOptIdx : 0);
+                    const optRegex2 = /\(?([a-dA-D])\)?\s*[.)\s-]+([^a-dA-D]+?)(?=\s*\(?[a-dA-D]\)?\s*[.)\s-]|$)/gi;
+                    while ((m = optRegex2.exec(remainingText)) !== null) {
+                        const letter = m[1].toUpperCase();
+                        const expected = String.fromCharCode(65 + optTexts.length);
+                        if (letter === expected) {
+                            optTexts.push(m[2].trim());
+                        }
+                    }
+                    
+                    if (optTexts.length >= 2) {
+                        optTexts.forEach(o => options.push(o));
                     }
                 }
+                
+                // If no inline options, look at following lines
+                if (options.length < 2) {
+                    let j = i + 1;
+                    while (j < lines.length && options.length < 4) {
+                        const nextLine = lines[j];
+                        
+                        // Stop if next question found
+                        if (/^\d+\s*[.)\s-]/.test(nextLine)) break;
+                        
+                        // Check for option: "a)", "A)", "(a)", "a.", "a -", etc.
+                        const optMatch = nextLine.match(/^\(?([a-dA-D])\)?\s*[.)\s-]+(.+)/);
+                        if (optMatch) {
+                            const letter = optMatch[1].toUpperCase();
+                            const expected = String.fromCharCode(65 + options.length);
+                            if (letter === expected) {
+                                options.push(optMatch[2].trim());
+                            }
+                        } else if (options.length === 0 && nextLine.length > 3) {
+                            // Continuation of question text
+                            qText += ' ' + nextLine;
+                        }
+                        j++;
+                    }
+                }
+                
+                // Add question if valid
+                if (qText.length > 2 && options.length >= 2) {
+                    questions.push({
+                        id: questions.length + 1,
+                        q: qText,
+                        opts: options.slice(0, 4),
+                        ans: null
+                    });
+                }
             }
+            
+            if (progressCallback) progressCallback(100, `Done! Found ${questions.length} questions total.`);
             
             return questions;
         }
@@ -408,7 +343,6 @@
         function parseKey(text) {
             try { const p = JSON.parse(text); if (Array.isArray(p)) return p; } catch (e) {}
             const answers = [];
-            // Support: "1:a, 2:b, 3:c" or "1:A, 2:B" or "1-a, 2-b"
             text.split(/[,;\n]+/).forEach(p => {
                 const m = p.trim().match(/(\d+)\s*[:=\-\s]\s*([a-dA-D])/i);
                 if (m) answers.push({ qNo: parseInt(m[1]), answer: m[2].toUpperCase() });
@@ -426,7 +360,7 @@
             });
         }
         
-        // Keyboard shortcuts
+        // Keyboard
         document.addEventListener('keydown', e => {
             if (!state.engine || state.testSubmitted) return;
             switch (e.key) {
