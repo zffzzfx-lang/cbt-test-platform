@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Text Extraction Test</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <style>
+        body { font-family: Arial; background: #1a1a2e; color: #eee; padding: 20px; }
+        .box { background: #16213e; padding: 20px; border-radius: 10px; margin: 10px 0; border: 1px solid #0f3460; }
+        h2 { color: #e94560; }
+        pre { background: #0f0f1a; padding: 15px; border-radius: 8px; overflow-x: auto; white-space: pre-wrap; font-size: 14px; max-height: 400px; overflow-y: auto; }
+        .q-box { background: #1a3a1a; border: 1px solid #2ecc71; padding: 12px; margin: 8px 0; border-radius: 8px; }
+        .btn { background: #e94560; color: #fff; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-size: 16px; }
+        .btn:hover { background: #c23152; }
+        input[type="file"] { margin: 10px 0; padding: 10px; background: #0f3460; color: #fff; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>📄 PDF Question Extractor - TEST</h1>
+    
+    <div class="box">
+        <h3>STEP 1: Upload Your PDF</h3>
+        <input type="file" id="pdfFile" accept=".pdf">
+    </div>
+
+    <div class="box">
+        <h3>STEP 2: Raw Text from PDF</h3>
+        <pre id="rawText">Yahan PDF ka text dikhega...</pre>
+    </div>
+
+    <div class="box">
+        <h3>STEP 3: Extracted Questions</h3>
+        <p>Total Questions Found: <strong id="count">0</strong></p>
+        <div id="questions"></div>
+    </div>
+
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        document.getElementById('pdfFile').addEventListener('change', async function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            document.getElementById('rawText').textContent = 'Extracting...';
+            
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                
+                let fullText = '';
+                
+                // Extract text from ALL pages
+                for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                    const page = await pdf.getPage(pageNum);
+                    const textContent = await page.getTextContent();
+                    
+                    // GET TEXT WITH POSITIONS
+                    const items = textContent.items;
+                    let pageText = '';
+                    let lastY = null;
+                    
+                    for (const item of items) {
+                        const currentY = item.transform[5];
+                        
+                        // New line detection
+                        if (lastY !== null && Math.abs(currentY - lastY) > 3) {
+                            pageText += '\n';
+                        } else if (pageText.length > 0 && !pageText.endsWith(' ') && !pageText.endsWith('\n')) {
+                            pageText += ' ';
+                        }
+                        
+                        pageText += item.str;
+                        lastY = currentY;
+                    }
+                    
+                    fullText += `=== PAGE ${pageNum} ===\n${pageText}\n\n`;
+                }
+                
+                document.getElementById('rawText').textContent = fullText;
+                
+                // PARSE QUESTIONS
+                const questions = extractQuestions(fullText);
+                document.getElementById('count').textContent = questions.length;
+                
+                const qDiv = document.getElementById('questions');
+                if (questions.length === 0) {
+                    qDiv.innerHTML = '<p style="color:#e94560;">❌ No questions found. Check raw text format above.</p>';
+                } else {
+                    qDiv.innerHTML = questions.map(q => `
+                        <div class="q-box">
+                            <strong>Q${q.id}:</strong> ${q.question}<br>
+                            <div style="margin-top:5px; color:#aaa;">
+                                ${q.options.map((opt, i) => `${String.fromCharCode(65+i)}) ${opt}`).join(' &nbsp;|&nbsp; ')}
+                            </div>
+                        </div>
+                    `).join('');
+                }
+                
+            } catch (error) {
+                document.getElementById('rawText').textContent = 'ERROR: ' + error.message;
+            }
+        });
+
+        function extractQuestions(text) {
+            const questions = [];
+            
+            // Split by pages
+            const pages = text.split(/=== PAGE \d+ ===/);
+            
+            for (const page of pages) {
+                if (!page.trim()) continue;
+                
+                const lines = page.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+                let currentQuestion = null;
+                
+                for (let i = 0; i < lines.length; i++) {
+                    const line = lines[i];
+                    
+                    // DETECT QUESTION START
+                    let questionMatch = null;
+                    
+                    // Pattern 1: "1. Question text"
+                    questionMatch = line.match(/^(\d+)\s*[.)]\s+(.+)/);
+                    
+                    // Pattern 2: "Q1. Question text"
+                    if (!questionMatch) questionMatch = line.match(/^Q\.?\s*(\d+)\s*[.)]\s+(.+)/i);
+                    
+                    // Pattern 3: "Question 1: text"
+                    if (!questionMatch) questionMatch = line.match(/^Question\s+(\d+)\s*[:.]\s+(.+)/i);
+                    
+                    if (questionMatch) {
+                        // Save previous question
+                        if (currentQuestion && currentQuestion.options.length >= 2) {
+                            questions.push({
+                                id: questions.length + 1,
+                                question: currentQuestion.question,
+                                options: currentQuestion.options
+                            });
+                        }
+                        
+                        // Start new question
+                        currentQuestion = {
+                            question: questionMatch[2].trim(),
+                            options: []
+                        };
+                        continue;
+                    }
+                    
+                    // DETECT OPTIONS
+                    if (currentQuestion) {
+                        // Pattern 1: "A. Option text"
+                        let optMatch = line.match(/^([A-D])\s*[.)]\s+(.+)/);
+                        
+                        // Pattern 2: "(A) Option text"
+                        if (!optMatch) optMatch = line.match(/^\(([A-D])\)\s*(.+)/);
+                        
+                        // Pattern 3: "A) Option text"
+                        if (!optMatch) optMatch = line.match(/^([A-D])\s*\)\s*(.+)/);
+                        
+                        if (optMatch) {
+                            const letter = optMatch[1];
+                            const text = optMatch[2].trim();
+                            
+                            // Avoid duplicates
+                            const expectedIndex = currentQuestion.options.length;
+                            const expectedLetter = String.fromCharCode(65 + expectedIndex);
+                            
+                            if (letter === expectedLetter) {
+                                currentQuestion.options.push(text);
+                            }
+                        }
+                    }
+                }
+                
+                // Save last question
+                if (currentQuestion && currentQuestion.options.length >= 2) {
+                    questions.push({
+                        id: questions.length + 1,
+                        question: currentQuestion.question,
+                        options: currentQuestion.options
+                    });
+                }
+            }
+            
+            return questions;
+        }
+    </script>
+</body>
+</html>
